@@ -1,0 +1,25 @@
+{
+  "name": "augur.world",
+  "version": "1.0.0",
+  "description": "World map for flood risk and precipitation event prediction",
+  "repository": "https://github.com/jahugg/augur.world.git",
+  "author": "jan@huggenberg.ch <jan@huggenberg.ch>",
+  "license": "MIT",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "leaflet": "^1.8.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.4.1"
+  },
+  "@parcel/transformer-css": {
+    "drafts": {
+      "nesting": true,
+      "customMedia": true
+    }
+  }
+}

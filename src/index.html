@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Augur.world</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+      integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+      crossorigin=""
+    /> -->
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <div id="app" data-aside-open>
+      <aside id="aside">
+        <header>
+          <nav>
+            <a href="">Home</a>
+            <a href="">Language</a>
+            <a href="">About</a>
+          </nav>
+        </header>
+        <div id="aside__content">
+          <article>
+            <h1>Title</h1>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, nobis fuga! Odit repellat debitis quaerat unde inventore nemo explicabo
+              dolor blanditiis quasi architecto in ad non, sunt culpa reiciendis corrupti.
+            </p>
+          </article>
+        </div>
+      </aside>
+      <main id="map">
+        <div id="map__tiles"></div>
+        <div id="map__controls">
+          <div>
+            <button id="map__controls__menu-btn" type="button">Menu</button>
+            <label>Search<input type="search" /></label>
+          </div>
+          <div><!-- top right --></div>
+          <label
+            >Return Period
+            <select>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+            </select>
+          </label>
+          <button type="button">My Location</button>
+        </div>
+        <div id="map__close">
+          <button id="map__close__btn" type="button">Close</button>
+          <div id="map__close__drag"></div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

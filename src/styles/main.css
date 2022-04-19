@@ -1,0 +1,102 @@
+/**
+ * Preferred default settings
+ */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+}
+
+/* https://drafts.csswg.org/mediaqueries-5/#custom-media-query */
+@custom-media --modern (color), (hover);
+
+@media (--modern) and (width > 1024px) {
+  // rules applicable for color and hover devices
+}
+
+:root {
+  --color-primary: rgb(0, 0, 0);
+  --color-secondary: rgb(0, 0, 0);
+  --padding-default: 24px;
+  --padding-mobile-overlap: 24px;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  &[data-aside-open] {
+    & #map {
+      transform: translateX(calc(100vw - var(--padding-mobile-overlap)));
+    }
+
+    & #map__close {
+      display: block;
+    }
+  }
+}
+
+#aside {
+  position: absolute;
+  height: 100%;
+  width: calc(100vw - var(--padding-mobile-overlap));
+}
+
+#map {
+  width: 100vw;
+  height: 100vh;
+  transition: transform 0.3s ease-out;
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+
+  & #map__tiles {
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+  }
+
+  & #map__controls {
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    align-content: space-between;
+
+    & > * {
+      pointer-events: auto;
+    }
+  }
+
+  & #map__close {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    height: 100%;
+    float: right;
+
+    & #map__close__btn {
+      transform: translateX(-100%);
+    }
+
+    & #map__close__drag {
+      height: 100%;
+      width: var(--padding-mobile-overlap);
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
