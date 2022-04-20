@@ -5,6 +5,7 @@
   "repository": "https://github.com/jahugg/augur.world.git",
   "author": "jan@huggenberg.ch <jan@huggenberg.ch>",
   "license": "MIT",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",

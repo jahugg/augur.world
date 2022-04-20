@@ -1,38 +1,14 @@
+@import 'config.css';
+
 /**
- * Preferred default settings
+ * app
  */
-html {
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-
-body {
-  margin: 0;
-}
-
-/* https://drafts.csswg.org/mediaqueries-5/#custom-media-query */
-@custom-media --modern (color), (hover);
-
-@media (--modern) and (width > 1024px) {
-  // rules applicable for color and hover devices
-}
-
-:root {
-  --color-primary: rgb(0, 0, 0);
-  --color-secondary: rgb(0, 0, 0);
-  --padding-default: 24px;
-  --padding-mobile-overlap: 24px;
-}
-
 #app {
+  font: normal 400 var(--font-size) var(--font-family);
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  color: var(--color-black);
 
   &[data-aside-open] {
     & #map {
@@ -40,17 +16,80 @@ body {
     }
 
     & #map__close {
-      display: block;
+      background: rgba(0, 0, 0, 0.3);
     }
   }
 }
 
+/**
+ * aside
+ */
 #aside {
   position: absolute;
+  padding: var(--padding-default) 0;
   height: 100%;
   width: calc(100vw - var(--padding-mobile-overlap));
+  overflow: scroll;
+
+  & #aside__header {
+    position: relative;
+
+    & nav {
+      display: flex;
+      padding: 0 var(--padding-default);
+      overflow: scroll;
+      gap: 5px;
+    }
+
+    & a {
+      font: var(--font-regular);
+      display: inline-block;
+      border: solid 0.15em var(--color-black);
+      padding: 0.6em 1.2em;
+      border-radius: 3em;
+      color: inherit;
+      text-decoration: none;
+
+      &:hover {
+        background: var(--color-grey-95);
+      }
+
+      &:active, &[data-active] {
+        background: var(--color-black);
+        color: var(--color-white);
+      }
+    }
+
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: var(--padding-default);
+      background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+    }
+
+    &:after {
+      right: 0;
+      transform: rotate(180deg);
+    }
+  }
+
+  & #aside__content {
+    padding: var(--padding-default);
+    height: 1000px;
+
+    & h1 {
+      font: var(--font-h1);
+    }
+  }
 }
 
+/**
+ * map
+ */
 #map {
   width: 100vw;
   height: 100vh;
@@ -65,6 +104,7 @@ body {
 
   & #map__controls {
     position: absolute;
+    padding: var(--padding-default);
     top: 0;
     z-index: 100;
     width: 100%;
@@ -82,21 +122,24 @@ body {
   }
 
   & #map__close {
-    display: none;
+    padding-top: var(--padding-default);
     position: absolute;
     z-index: 100;
     top: 0;
     height: 100%;
     float: right;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.3s ease-out;
+  }
 
-    & #map__close__btn {
-      transform: translateX(-100%);
-    }
-
-    & #map__close__drag {
-      height: 100%;
-      width: var(--padding-mobile-overlap);
-      background: rgba(0, 0, 0, 0.5);
-    }
+  & #map__close__btn {
+    transform: translateX(-100%);
+    background: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    padding: 0.6em;
+    border: solid 0.15em var(--color-black);
+    font: var(--font-regular);
+    border-radius: 4px 0 0 4px;
   }
 }

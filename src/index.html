@@ -5,22 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Augur.world</title>
     <link rel="stylesheet" href="./styles/main.css" />
-    <!-- <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-      integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-      crossorigin=""
-    /> -->
     <script type="module" src="./app.js"></script>
   </head>
   <body>
     <div id="app" data-aside-open>
       <aside id="aside">
-        <header>
+        <header id="aside__header">
           <nav>
-            <a href="">Home</a>
-            <a href="">Language</a>
-            <a href="">About</a>
+            <a href="#">Home</a>
+            <a href="#">Language</a>
+            <a href="#">About</a>
           </nav>
         </header>
         <div id="aside__content">
@@ -55,7 +49,6 @@
         </div>
         <div id="map__close">
           <button id="map__close__btn" type="button">Close</button>
-          <div id="map__close__drag"></div>
         </div>
       </main>
     </div>

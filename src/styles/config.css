@@ -1,0 +1,67 @@
+/**
+ * Preferred default settings
+ */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+}
+
+/* https://drafts.csswg.org/mediaqueries-5/#custom-media-query */
+@custom-media --modern (color), (hover);
+
+@media (--modern) and (width > 1024px) {
+  /* rules applicable for color and hover devices */
+}
+
+:root {
+  /* color */
+  --color-primary: rgb(240, 160, 220);
+  --color-primary-light: color-mix(in srgb, rgb(240, 160, 220) 100%, white 30%);
+  --color-secondary: rgb(0, 0, 0);
+  --color-black: rgba(0, 0, 0);
+  --color-white: rgba(255, 255, 255);
+  --color-grey-95: hsl(0, 0%, 95%);
+
+  /* spacing */
+  --padding-default: 24px;
+  --padding-mobile-overlap: 24px;
+
+  /* text */
+  --font-size: 1rem;
+  --font-family: 'Inter v', 'Helvetica', 'Arial', sans-serif;
+  --font-big: normal 400 2em var(--font-family);
+  --font-h1: normal 400 1.5em var(--font-family);
+  --font-regular: normal 400 1em var(--font-family);
+  --font-small: normal 400 0.8em var(--font-family);
+  --font-tiny: normal 400 0.7em var(--font-family);
+}
+
+/* --------------------------------------------------------------------------
+[EXPERIMENTAL] Multi-axis, single variable font.
+
+Slant axis is not yet widely supported (as of February 2019) and thus this
+multi-axis single variable font is opt-in rather than the default.
+
+When using this, you will probably need to set font-variation-settings
+explicitly, e.g.
+
+  * { font-variation-settings: "slnt" 0deg }
+  .italic { font-variation-settings: "slnt" 10deg }
+
+*/
+@font-face {
+  font-family: 'Inter v';
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: oblique 0deg 10deg;
+  src: url('../fonts/Inter.var.woff2?v=3.19') format('woff2');
+}

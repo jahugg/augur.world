@@ -33,7 +33,7 @@ function init() {
   let menuBtn = document.getElementById('map__controls__menu-btn');
   menuBtn.addEventListener('click', toggleAside);
   
-  let closeMenuBtn = document.getElementById('map__close__btn');
+  let closeMenuBtn = document.getElementById('map__close');
   closeMenuBtn.addEventListener('click', toggleAside.bind("close"));
 }
 
