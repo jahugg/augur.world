@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Augur.world</title>
+    <title>AUGUR.world</title>
     <link rel="stylesheet" href="./styles/main.css" />
     <script type="module" src="./app.js"></script>
   </head>
@@ -30,24 +30,24 @@
       <main id="map">
         <div id="map__contents">
           <div id="map__contents__tiles"></div>
-          <div id="map__contents__controls">
-            <div>
-              <button id="map__controls__menu-btn" type="button">Menu</button>
-              <label>Search<input type="search" /></label>
-            </div>
-            <div><!-- top right --></div>
-            <label
-              >Return Period
-              <select>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="50" selected>50</option>
-                <option value="100">100</option>
-              </select>
-            </label>
+          <div id="map__contents__search" class="map-ui">
+            <button id="map__controls__menu-btn" type="button">Menu</button>
+            <label>Search<input type="search" /></label>
+          </div>
+          <label id="map__contents__period" class="map-ui"
+            >Return Period
+            <select>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+            </select>
+          </label>
+          <div id="map__contents__tools" class="map-ui">
             <button type="button">My Location</button>
           </div>
+          <div id="map__contents__details" class="map-ui"></div>
         </div>
         <div id="map__close">
           <button id="map__close__btn" type="button">&leftarrow;</button>

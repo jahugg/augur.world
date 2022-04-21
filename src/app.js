@@ -13,8 +13,13 @@ const marker = new L.marker();
 function init() {
   // configure tile layer
   let baseLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png', {
-    attribution: `attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>`,
+    attribution: `attribution: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>`,
     detectRetina: true,
+  });
+
+  let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
+    detectRetina: true,
+    opacity: 0.6
   });
 
   // create map
@@ -22,7 +27,7 @@ function init() {
     center: new L.LatLng(0, 0),
     zoom: 3,
     zoomControl: false,
-    layers: [baseLayer],
+    layers: [baseLayer, augurLayer],
   });
 
   // add event listeners
