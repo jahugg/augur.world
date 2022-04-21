@@ -26,31 +26,11 @@
     & #aside {
       width: 0;
     }
-  }
 
-  /* &[data-aside-open] {
-
-    & #aside {
-      width: calc(100vw - var(--padding-mobile-overlap));
-    }
-
-    & #map__close {
-      background: rgba(0, 0, 0, 0.1);
-
-      &:after {
-        display: block;
-      }
-    }
-    @media (--window-mobile) {
-      & #map {
-        transform: translateX(calc(100vw - var(--padding-mobile-overlap)));
-      }
+    & #map__close:after {
+      background: rgba(0, 0, 0, 0);
     }
   }
-
-  @media (--window-narrow) {
-    display: flex;
-  } */
 }
 
 /**
@@ -143,15 +123,15 @@
 #map {
   position: relative;
   flex: 1 1 auto;
-  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--layer-shadow);
 
   & #map__contents {
     height: 100%;
-    width: 100%;
+    width: 100vw;
     /* place css grid here */
 
-    @media (--window-mobile) {
-      width: 100vw;
+    @media (--window-narrow) {
+      width: 100%;
     }
 
     & #map__contents__tiles {
@@ -189,14 +169,12 @@
     height: 100%;
     float: right;
     width: var(--padding-mobile-overlap);
-    background: rgba(0, 0, 0, 0);
     transition: background 0.3s ease-out;
 
     &:after {
       content: '';
-      display: none;
       background: rgba(0, 0, 0, 0.1);
-      width: 5px;
+      width: 4px;
       height: 15vh;
       position: absolute;
       left: calc(var(--padding-mobile-overlap) / 2);
@@ -214,7 +192,7 @@
       border: solid 0.15em var(--color-white);
       font: var(--font-regular);
       border-radius: 4px 0 0 4px;
-      box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     }
   }
 }

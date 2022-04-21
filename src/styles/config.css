@@ -29,7 +29,7 @@ body {
 
   /* spacing */
   --padding-default: 24px;
-  --padding-mobile-overlap: 24px;
+  --padding-mobile-overlap: 18px;
   --aside-max-width: 480px;
   --spacer: 6px;
   --space-s: calc(var(--spacer) * 2);
@@ -43,6 +43,9 @@ body {
   --font-regular: normal 400 1em var(--font-family);
   --font-small: normal 400 0.8em var(--font-family);
   --font-tiny: normal 400 0.7em var(--font-family);
+
+  /* effects */
+  --layer-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 /**
