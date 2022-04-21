@@ -1,6 +1,15 @@
 @import 'config.css';
 
 /**
+ * Custom Media Query
+ * https://drafts.csswg.org/mediaqueries-5/#custom-media-query
+ * wont work if placed in config.css
+ */
+@custom-media --device-mouse (color), (hover);
+@custom-media --window-mobile (width <= 800px);
+@custom-media --window-narrow (width > 800px);
+
+/**
  * app
  */
 #app {
@@ -11,13 +20,22 @@
   color: var(--color-black);
 
   &[data-aside-open] {
-    & #map {
-      transform: translateX(calc(100vw - var(--padding-mobile-overlap)));
-    }
-
     & #map__close {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.1);
+
+      &:after {
+        display: block;
+      }
     }
+    @media (--window-mobile) {
+      & #map {
+        transform: translateX(calc(100vw - var(--padding-mobile-overlap)));
+      }
+    }
+  }
+
+  @media (--window-narrow) {
+    display: flex;
   }
 }
 
@@ -30,6 +48,11 @@
   height: 100%;
   width: calc(100vw - var(--padding-mobile-overlap));
   overflow: scroll;
+  max-width: var(--aside-max-width);
+
+  @media (--window-narrow) {
+    position: relative;
+  }
 
   & #aside__header {
     position: relative;
@@ -54,7 +77,8 @@
         background: var(--color-grey-95);
       }
 
-      &:active, &[data-active] {
+      &:active,
+      &[data-selected] {
         background: var(--color-black);
         color: var(--color-white);
       }
@@ -68,7 +92,7 @@
       top: 0;
       height: 100%;
       width: var(--padding-default);
-      background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
     }
 
     &:after {
@@ -83,6 +107,10 @@
 
     & h1 {
       font: var(--font-h1);
+    }
+
+    & p {
+      font: var(--font-regular);
     }
   }
 }
@@ -128,8 +156,22 @@
     top: 0;
     height: 100%;
     float: right;
+    width: var(--padding-mobile-overlap);
     background: rgba(0, 0, 0, 0);
     transition: background 0.3s ease-out;
+
+    &:after {
+      content: '';
+      display: none;
+      background: rgba(0, 0, 0, 0.1);
+      width: 5px;
+      height: 15vh;
+      position: absolute;
+      left: calc(var(--padding-mobile-overlap) / 2);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 5px;
+    }
   }
 
   & #map__close__btn {
