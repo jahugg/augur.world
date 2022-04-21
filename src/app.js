@@ -18,7 +18,7 @@ function init() {
   });
 
   // create map
-  map = new L.Map('map__tiles', {
+  map = new L.Map('map__contents__tiles', {
     center: new L.LatLng(0, 0),
     zoom: 3,
     zoomControl: false,
@@ -59,11 +59,11 @@ function is_touch_enabled() {
  * @return {String}      set target state open/close/(empty = toggle)
  */
 function toggleAside(targetState) {
-  const attr = 'data-aside-open';
+  const attr = 'data-aside-closed';
   const app = document.getElementById('app');
 
-  if (targetState === 'open') app.setAttribute(attr, '');
-  else if (targetState === 'close') app.removeAttribute(attr);
+  if (targetState === 'close') app.setAttribute(attr, '');
+  else if (targetState === 'open') app.removeAttribute(attr);
   else app.hasAttribute(attr) ? app.removeAttribute(attr) : app.setAttribute(attr, '');
 }
 

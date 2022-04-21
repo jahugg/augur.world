@@ -8,7 +8,7 @@
     <script type="module" src="./app.js"></script>
   </head>
   <body>
-    <div id="app" data-aside-open>
+    <div id="app">
       <aside id="aside">
         <header id="aside__header">
           <nav>
@@ -28,27 +28,29 @@
         </div>
       </aside>
       <main id="map">
-        <div id="map__tiles"></div>
-        <div id="map__controls">
-          <div>
-            <button id="map__controls__menu-btn" type="button">Menu</button>
-            <label>Search<input type="search" /></label>
+        <div id="map__contents">
+          <div id="map__contents__tiles"></div>
+          <div id="map__contents__controls">
+            <div>
+              <button id="map__controls__menu-btn" type="button">Menu</button>
+              <label>Search<input type="search" /></label>
+            </div>
+            <div><!-- top right --></div>
+            <label
+              >Return Period
+              <select>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+              </select>
+            </label>
+            <button type="button">My Location</button>
           </div>
-          <div><!-- top right --></div>
-          <label
-            >Return Period
-            <select>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="50" selected>50</option>
-              <option value="100">100</option>
-            </select>
-          </label>
-          <button type="button">My Location</button>
         </div>
         <div id="map__close">
-          <button id="map__close__btn" type="button">Close</button>
+          <button id="map__close__btn" type="button">&leftarrow;</button>
         </div>
       </main>
     </div>

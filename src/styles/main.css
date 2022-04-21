@@ -13,13 +13,27 @@
  * app
  */
 #app {
-  font: normal 400 var(--font-size) var(--font-family);
+  display: flex;
+  flex-wrap: nowrap;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+
+  font: normal 400 var(--font-size) var(--font-family);
   color: var(--color-black);
 
-  &[data-aside-open] {
+  &[data-aside-closed] {
+    & #aside {
+      width: 0;
+    }
+  }
+
+  /* &[data-aside-open] {
+
+    & #aside {
+      width: calc(100vw - var(--padding-mobile-overlap));
+    }
+
     & #map__close {
       background: rgba(0, 0, 0, 0.1);
 
@@ -36,22 +50,31 @@
 
   @media (--window-narrow) {
     display: flex;
-  }
+  } */
 }
 
 /**
  * aside
  */
 #aside {
-  position: absolute;
-  padding: var(--padding-default) 0;
-  height: 100%;
+  flex: 0 0 auto;
   width: calc(100vw - var(--padding-mobile-overlap));
-  overflow: scroll;
-  max-width: var(--aside-max-width);
+  transition: width 0.3s ease-out;
+  padding: var(--padding-default) 0;
+
+  & #aside__header,
+  & #aside__content {
+    width: calc(100vw - var(--padding-mobile-overlap));
+    max-width: var(--aside-max-width);
+  }
 
   @media (--window-narrow) {
-    position: relative;
+    width: var(--aside-max-width);
+
+    & #aside__header,
+    & #aside__content {
+      width: var(--aside-max-width);
+    }
   }
 
   & #aside__header {
@@ -103,7 +126,6 @@
 
   & #aside__content {
     padding: var(--padding-default);
-    height: 1000px;
 
     & h1 {
       font: var(--font-h1);
@@ -119,33 +141,43 @@
  * map
  */
 #map {
-  width: 100vw;
-  height: 100vh;
-  transition: transform 0.3s ease-out;
+  position: relative;
+  flex: 1 1 auto;
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
 
-  & #map__tiles {
-    width: 100%;
+  & #map__contents {
     height: 100%;
-    z-index: 50;
-  }
-
-  & #map__controls {
-    position: absolute;
-    padding: var(--padding-default);
-    top: 0;
-    z-index: 100;
     width: 100%;
-    height: 100%;
-    pointer-events: none;
+    /* place css grid here */
 
-    display: grid;
-    grid-template-columns: auto auto;
-    justify-content: space-between;
-    align-content: space-between;
+    @media (--window-mobile) {
+      width: 100vw;
+    }
 
-    & > * {
-      pointer-events: auto;
+    & #map__contents__tiles {
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+    }
+
+    & #map__contents__controls {
+      position: absolute;
+      padding: var(--padding-default);
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+
+      display: grid;
+      grid-template-columns: auto auto;
+      justify-content: space-between;
+      align-content: space-between;
+      display: none;
+
+      & > * {
+        pointer-events: auto;
+      }
     }
   }
 
@@ -172,16 +204,17 @@
       transform: translate(-50%, -50%);
       border-radius: 5px;
     }
-  }
 
-  & #map__close__btn {
-    transform: translateX(-100%);
-    background: var(--color-black);
-    color: var(--color-white);
-    border: none;
-    padding: 0.6em;
-    border: solid 0.15em var(--color-black);
-    font: var(--font-regular);
-    border-radius: 4px 0 0 4px;
+    & #map__close__btn {
+      transform: translateX(-100%);
+      background: var(--color-white);
+      color: var(--color-black);
+      border: none;
+      padding: 0.6em;
+      border: solid 0.15em var(--color-white);
+      font: var(--font-regular);
+      border-radius: 4px 0 0 4px;
+      box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+    }
   }
 }
