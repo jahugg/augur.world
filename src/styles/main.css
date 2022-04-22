@@ -70,10 +70,11 @@
     }
 
     & a {
+      --border-width: 0.15em;
       font: var(--font-regular);
       display: inline-block;
-      border: solid 0.15em var(--color-black);
-      padding: 0.6em 1.2em;
+      border: solid var(--border-width) var(--color-black);
+      padding: calc(0.6em - var(--border-width)) 1.2em;
       border-radius: 3em;
       color: inherit;
       text-decoration: none;
@@ -130,9 +131,9 @@
   & .button-onmap {
     background: white;
     border: none;
-    border-radius: 2px;
+    border-radius: 4px;
     font: var(--font-regular);
-    padding: calc(0.6em + 2px);
+    padding: 0.6em;
     box-shadow: var(--layer-shadow);
   }
 
@@ -208,13 +209,8 @@
 
     & #map__close__btn {
       transform: translateX(-100%);
-      background: var(--color-white);
-      color: var(--color-black);
-      border: none;
-      padding: 0.6em;
-      border: solid 0.15em var(--color-white);
-      font: var(--font-regular);
-      border-radius: 4px 0 0 4px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
       box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     }
   }
