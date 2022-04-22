@@ -66,6 +66,7 @@
       padding: 0 var(--padding-default);
       overflow: scroll;
       gap: 5px;
+      padding-right: 100px;
     }
 
     & a {
@@ -126,6 +127,15 @@
   flex: 1 1 auto;
   box-shadow: var(--layer-shadow);
 
+  & .button-onmap {
+    background: white;
+    border: none;
+    border-radius: 2px;
+    font: var(--font-regular);
+    padding: calc(0.6em + 2px);
+    box-shadow: var(--layer-shadow);
+  }
+
   & #map__contents {
     position: relative;
     height: 100%;
@@ -138,16 +148,18 @@
       width: 100%;
     }
 
-    & .map-ui {
-      z-index: 100;
-      padding: var(--space-l);
-      pointer-event: none;
-    }
-
     & #map__contents__tiles {
       /* full grid */
       grid-area: 1 / 1 / 4 / 4;
       z-index: 50;
+    }
+
+    & #map__contents__search,
+    & #map__contents__period,
+    & #map__contents__tools,
+    & #map__contents__details {
+      z-index: 100;
+      padding: var(--space-l);
     }
 
     & #map__contents__search {
