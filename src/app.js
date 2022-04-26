@@ -19,14 +19,17 @@ function init() {
 
   let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
     detectRetina: true,
-    opacity: 0.6
+    opacity: 0.5,
   });
 
   // create map
   map = new L.Map('map__contents__tiles', {
     center: new L.LatLng(0, 0),
-    zoom: 3,
+    zoom: 4,
+    minZoom: 4,
     zoomControl: false,
+    // maxBounds: L.latLngBounds(L.latLng(50, -74.227), L.latLng(40.774, -74.125)),
+    maxBounds: [[-50, -Infinity], [50, Infinity]],
     layers: [baseLayer, augurLayer],
   });
 
@@ -37,9 +40,23 @@ function init() {
 
   let menuBtn = document.getElementById('map__controls__menu-btn');
   menuBtn.addEventListener('click', toggleAside);
-  
+
   let closeMenuBtn = document.getElementById('map__close');
-  closeMenuBtn.addEventListener('click', toggleAside.bind("close"));
+  closeMenuBtn.addEventListener('click', toggleAside.bind('close'));
+
+  let asideHeaderButtons = document.querySelectorAll('#aside nav a');
+  for (let link of asideHeaderButtons) link.addEventListener('click', loadPage);
+}
+
+/**
+ * loading the contents of a new page within the aside section
+ * @param  {Object} event Event that triggered the function
+ */
+function loadPage(event) {
+  const targetLink = event.target.closest('a');
+  const parent = targetLink.closest('nav');
+  for (let child of parent.children) delete child.dataset.selected;
+  targetLink.dataset.selected = '';
 }
 
 /**

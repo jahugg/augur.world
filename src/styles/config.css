@@ -15,28 +15,42 @@ body {
   margin: 0;
 }
 
+img {
+  display: block;
+}
+
+button {
+  cursor: pointer;
+}
+
 /**
  * Custom Properties
  */
 :root {
   /* color */
-  --color-primary: rgb(240, 160, 220);
+  --color-primary: rgb(103, 174, 224);
   --color-primary-light: color-mix(in srgb, rgb(240, 160, 220) 100%, white 30%);
   --color-secondary: rgb(0, 0, 0);
   --color-black: rgba(0, 0, 0);
   --color-white: rgba(255, 255, 255);
-  --color-grey-95: hsl(0, 0%, 95%);
+  --color-grey-01: hsl(0, 0%, 97%);
 
   /* spacing */
-  --padding-default: 24px;
-  --padding-mobile-overlap: 18px;
-  --aside-max-width: 480px;
   --spacer: 6px;
   --space-xs: var(--spacer));
   --space-s: calc(var(--spacer) * 2);
   --space-m: calc(var(--spacer) * 3);
   --space-l: calc(var(--spacer) * 4);
   --space-xl: calc(var(--spacer) * 5);
+
+  --spacer-rel: 0.3em;
+  --space-rel-xs: var(--spacer-rel);
+  --space-rel-s: calc(var(--spacer-rel) * 2);
+  --space-rel-m: calc(var(--spacer-rel) * 3);
+
+  --padding-default: var(--space-l);
+  --padding-mobile-overlap: var(--space-m);
+  --aside-max-width: 480px;
 
 
   /* text */
@@ -49,7 +63,9 @@ body {
   --font-tiny: normal 400 0.7em var(--font-family);
 
   /* effects */
-  --layer-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  --card-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  --card-border-radius: 3px;
+  --icon-active-filter: brightness(0) invert(1);
 }
 
 /**
@@ -73,5 +89,7 @@ explicitly, e.g.
   font-weight: 100 900;
   font-display: swap;
   font-style: oblique 0deg 10deg;
-  src: url('../fonts/Inter.var.woff2?v=3.19') format('woff2');
+  src: url('../assets/fonts/Inter.var.woff2?v=3.19') format('woff2');
 }
+
+

@@ -32,6 +32,10 @@
       background: rgba(0, 0, 0, 0);
     }
   }
+
+  & .icon {
+    width: 20px;
+  }
 }
 
 /**
@@ -74,19 +78,23 @@
       font: var(--font-regular);
       display: inline-block;
       border: solid var(--border-width) var(--color-black);
-      padding: calc(0.6em - var(--border-width)) 1.2em;
+      padding: calc(var(--space-rel-s) - var(--border-width)) var(--space-rel-m);
       border-radius: 3em;
       color: inherit;
       text-decoration: none;
 
       &:hover {
-        background: var(--color-grey-95);
+        background: var(--color-grey-01);
       }
 
       &:active,
       &[data-selected] {
         background: var(--color-black);
         color: var(--color-white);
+
+        & .icon {
+          filter: var(--icon-active-filter);
+        }
       }
     }
 
@@ -126,15 +134,15 @@
 #map {
   position: relative;
   flex: 1 1 auto;
-  box-shadow: var(--layer-shadow);
+  box-shadow: var(--card-shadow);
 
-  & .button-onmap {
+  & .card {
     background: white;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--card-border-radius);
     font: var(--font-regular);
-    padding: 0.6em;
-    box-shadow: var(--layer-shadow);
+    padding: var(--space-rel-s);
+    box-shadow: var(--card-shadow);
   }
 
   & #map__contents {
@@ -166,11 +174,25 @@
     & #map__contents__search {
       /* top-left */
       grid-area: 1 / 1 / 2 / 2;
+      display: flex;
+      gap: 5px;
     }
 
     & #map__contents__period {
       /* bottom-left */
       grid-area: 3 / 1 / 4 / 2;
+
+      & label {
+        padding-right: 0;
+      }
+
+      & select {
+        padding: 0;
+        color: white;
+        height: 100%;
+        border: none;
+        background: var(--color-primary);
+      }
     }
 
     & #map__contents__tools {
@@ -182,6 +204,7 @@
       display: none;
       /* left */
       grid-area: 1 / 1 / 4 / 2;
+      background: yellow;
     }
   }
 
@@ -211,7 +234,9 @@
       transform: translateX(-100%);
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      background: var(--color-grey-01);
+      box-shadow: none;
+      box-shadow: inset -3px 0 3px 0px rgba(0,0,0, 0.1);
     }
   }
 }
