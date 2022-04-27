@@ -146,12 +146,6 @@
     box-shadow: var(--card-shadow);
   }
 
-  &[data-details-closed] {
-    & #map__contents__details {
-      display: none;
-    }
-  }
-
   & #map__close {
     padding-top: var(--padding-default);
     position: absolute;
@@ -167,6 +161,7 @@
       background: rgba(0, 0, 0, 0.1);
       width: 4px;
       height: 15vh;
+      min-height: 100px;
       position: absolute;
       left: calc(var(--padding-mobile-overlap) / 2);
       top: 50%;
@@ -205,7 +200,7 @@
   z-index: 50;
 }
 #map__contents__period {
-  grid-area: 3 / 1 / 4 / 2;
+  grid-area: 3 / 2 / 4 / 3;
   z-index: 100;
   padding: var(--space-l);
 
@@ -235,13 +230,15 @@
   padding: var(--space-l);
 }
 #map__contents__details {
-  /* grid-area: 1 / 1 / 4 / 4; */
-  /* left */
-  grid-area: 1 / 1 / 4 / 2;
+  grid-area: 1 / 1 / 4 / 4;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(5px);
   z-index: 100;
   padding: var(--space-l);
+
+  @media (--map-aside) {
+    grid-area: 1 / 1 / 4 / 2;
+  }
 }
 #map__contents__navigate {
   --search-width: 300px;
@@ -265,14 +262,22 @@
     max-width: var(--search-width);
     display: flex;
     gap: var(--space-xs);
+    padding: 0;
+    align-items: center;
   }
 
-  & input[type='search'] {
+  & label,
+  & #map__contents__navigate__search__clear {
+    padding: var(--space-rel-s);
+  }
+
+  & #map__contents__navigate__search__input {
     flex: 1 1 auto;
     border: none;
     font: inherit;
-    padding: 0;
+    padding: var(--space-rel-s);
     width: 150px;
+    background: none;
 
     &:focus {
       outline: none;
@@ -286,12 +291,32 @@
 * Container Queries would be the ideal solution for handling the map
 * size and grid behaviour. To be considered in the future.
 **/
-#app[data-aside-closed] #map__contents__navigate {
+#app[data-aside-closed] {
   @media (--map-fullscreen) {
-    grid-area: 1 / 1 / 2 / 2;
+    & #map__contents__navigate {
+      grid-area: 1 / 1 / 2 / 2;
+    }
 
     & #map__contents__navigate__search {
       width: var(--search-width);
     }
+
+    & #map__contents__details {
+      grid-area: 1 / 1 / 4 / 2;
+    }
+  }
+}
+
+#map[data-details-closed] {
+  & #map__contents__navigate__search__clear {
+    display: none;
+  }
+
+  & #map__contents__details {
+    display: none;
+  }
+
+  & #map__contents__period {
+    grid-area: 3 / 1 / 4 / 2;
   }
 }

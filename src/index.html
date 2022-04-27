@@ -27,7 +27,7 @@
           </article>
         </div>
       </aside>
-      <main id="map" data-details-closed> 
+      <main id="map" data-details-closed>
         <div id="map__contents">
           <div id="map__contents__tiles"></div>
           <div id="map__contents__period">
@@ -47,13 +47,16 @@
           </div>
           <div id="map__contents__details"></div>
           <div id="map__contents__navigate">
-            <button id="map__controls__menu-btn" class="card" type="button">
+            <button id="map__contents__navigate__menu-toggle" class="card" type="button">
               <img class="icon" src="./assets/icons/menu_black_24dp.svg" alt="Menu" />
             </button>
-            <label id="map__contents__navigate__search" class="card">
-              <input type="search" placeholder="Find a place..." />
-              <img class="icon" src="./assets/icons/search_black_24dp.svg" alt="Search" />
-            </label>
+            <div id="map__contents__navigate__search" class="card">
+              <input id="map__contents__navigate__search__input" type="search" placeholder="Find a place..." />
+              <label for="map__contents__navigate__search__input">
+                <img class="icon" src="./assets/icons/search_black_24dp.svg" alt="Search" />
+              </label>
+              <div id="map__contents__navigate__search__clear"><img class="icon" src="./assets/icons/clear_black_24dp.svg" alt="Clear" /></div>
+            </div>
           </div>
         </div>
         <div id="map__close">

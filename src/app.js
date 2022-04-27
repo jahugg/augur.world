@@ -41,7 +41,7 @@ function init() {
   if (is_touch_enabled()) map.addEventListener('contextmenu', (event) => setLocation(event.latlng));
   else map.addEventListener('click', (event) => setLocation(event.latlng));
 
-  let menuBtn = document.getElementById('map__controls__menu-btn');
+  let menuBtn = document.getElementById('map__contents__navigate__menu-toggle');
   menuBtn.addEventListener('click', toggleAside);
 
   let closeMenuBtn = document.getElementById('map__close');
@@ -50,7 +50,7 @@ function init() {
   let asideHeaderButtons = document.querySelectorAll('#aside nav a');
   for (let link of asideHeaderButtons) link.addEventListener('click', loadPage);
 
-  const clearLocationBtn = document.querySelector("#map__contents__navigate__search img");
+  const clearLocationBtn = document.querySelector('#map__contents__navigate__search .icon[alt="Clear"]');
   clearLocationBtn.addEventListener("click", clearLocation);
 }
 
@@ -73,7 +73,7 @@ function loadPage(event) {
 function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
-  // update seach field input
+  // update search field input
     const mapEl = document.getElementById('map');
     delete mapEl.dataset.detailsClosed;
 
