@@ -19,7 +19,7 @@ function init() {
 
   let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
     detectRetina: true,
-    opacity: 0.5,
+    opacity: .5,
   });
 
   // create map
@@ -29,7 +29,10 @@ function init() {
     minZoom: 4,
     zoomControl: false,
     // maxBounds: L.latLngBounds(L.latLng(50, -74.227), L.latLng(40.774, -74.125)),
-    maxBounds: [[-50, -Infinity], [50, Infinity]],
+    maxBounds: [
+      [-50, -Infinity],
+      [50, Infinity],
+    ],
     layers: [baseLayer, augurLayer],
   });
 
@@ -46,6 +49,9 @@ function init() {
 
   let asideHeaderButtons = document.querySelectorAll('#aside nav a');
   for (let link of asideHeaderButtons) link.addEventListener('click', loadPage);
+
+  const clearLocationBtn = document.querySelector("#map__contents__navigate__search img");
+  clearLocationBtn.addEventListener("click", clearLocation);
 }
 
 /**
@@ -66,6 +72,23 @@ function loadPage(event) {
  */
 function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
+
+  // update seach field input
+    const mapEl = document.getElementById('map');
+    delete mapEl.dataset.detailsClosed;
+
+  // load and open details view
+}
+
+function clearLocation(event) {
+    const mapEl = document.getElementById('map');
+    mapEl.dataset.detailsClosed = '';
+
+    //clear search field input
+
+    // close details view
+
+    console.log("clear location")
 }
 
 /**

@@ -37,7 +37,7 @@ button {
 
   /* spacing */
   --spacer: 6px;
-  --space-xs: var(--spacer));
+  --space-xs: var(--spacer);
   --space-s: calc(var(--spacer) * 2);
   --space-m: calc(var(--spacer) * 3);
   --space-l: calc(var(--spacer) * 4);
@@ -50,7 +50,7 @@ button {
 
   --padding-default: var(--space-l);
   --padding-mobile-overlap: var(--space-m);
-  --aside-max-width: 480px;
+  --aside-max-width: 440px;
 
 
   /* text */

@@ -12,7 +12,7 @@
       <aside id="aside">
         <header id="aside__header">
           <nav>
-            <a href="#" data-selected><img class="icon" src="./assets/icons/home_filled_black_24dp.svg" alt="Close"></a>
+            <a href="#" data-selected><img class="icon" src="./assets/icons/home_filled_black_24dp.svg" alt="Close" /></a>
             <a href="#">Language</a>
             <a href="#">About</a>
           </nav>
@@ -27,13 +27,9 @@
           </article>
         </div>
       </aside>
-      <main id="map">
+      <main id="map" data-details-closed> 
         <div id="map__contents">
           <div id="map__contents__tiles"></div>
-          <div id="map__contents__search">
-            <button id="map__controls__menu-btn" class="card" type="button"><img class="icon" src="./assets/icons/menu_black_24dp.svg" alt="Menu"></button>
-            <label><input type="search" class="card" placeholder="Find a place..."/></label>
-          </div>
           <div id="map__contents__period">
             <label class="card"
               >Return Period
@@ -47,12 +43,23 @@
             </label>
           </div>
           <div id="map__contents__tools">
-            <button type="button" class="card"><img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location"></button>
+            <button type="button" class="card"><img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" /></button>
           </div>
           <div id="map__contents__details"></div>
+          <div id="map__contents__navigate">
+            <button id="map__controls__menu-btn" class="card" type="button">
+              <img class="icon" src="./assets/icons/menu_black_24dp.svg" alt="Menu" />
+            </button>
+            <label id="map__contents__navigate__search" class="card">
+              <input type="search" placeholder="Find a place..." />
+              <img class="icon" src="./assets/icons/search_black_24dp.svg" alt="Search" />
+            </label>
+          </div>
         </div>
         <div id="map__close">
-          <button id="map__close__btn" class="card" type="button"><img class="icon" src="./assets/icons/arrow_back_black_24dp.svg" alt="Close"></button>
+          <button id="map__close__btn" class="card" type="button">
+            <img class="icon" src="./assets/icons/arrow_back_black_24dp.svg" alt="Close" />
+          </button>
         </div>
       </main>
     </div>
