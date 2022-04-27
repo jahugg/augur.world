@@ -45,7 +45,41 @@
           <div id="map__contents__tools">
             <button type="button" class="card"><img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" /></button>
           </div>
-          <div id="map__contents__details"></div>
+          <div id="map__contents__details">
+            <section>
+              <div id="map__contents__details__topic">Precipitaction Events | Flooding Risk</div>
+              <div id="map__contents__details__graph">Graph</div>
+              <ul id="map__contents__details__actions">
+                <li>
+                  <button type="button"><img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" /></button>
+                </li>
+                <li>
+                  <button type="button"><img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" /></button>
+                </li>
+                <li>
+                  <button type="button"><img class="icon" src="./assets/icons/print_black_24dp.svg" alt="Print" /></button>
+                </li>
+              </ul>
+              <ul id="map__contents__details__settings">
+                <li>
+                  <label
+                    >Climate Change Period
+                    <select>
+                      <option value="2030">2030</option>
+                      <option value="2040">2040</option>
+                      <option value="2050" selected>2050</option>
+                    </select>
+                  </label>
+                </li>
+                <li>
+                  <label
+                    >Show Uncertainty Range
+                    <input type="checkbox" name="vehicle1" value="uncertainty">
+                  </label>
+                </li>
+              </ul>
+            </section>
+          </div>
           <div id="map__contents__navigate">
             <button id="map__contents__navigate__menu-toggle" class="card" type="button">
               <img class="icon" src="./assets/icons/menu_black_24dp.svg" alt="Menu" />
@@ -55,7 +89,9 @@
               <label for="map__contents__navigate__search__input">
                 <img class="icon" src="./assets/icons/search_black_24dp.svg" alt="Search" />
               </label>
-              <div id="map__contents__navigate__search__clear"><img class="icon" src="./assets/icons/clear_black_24dp.svg" alt="Clear" /></div>
+              <div id="map__contents__navigate__search__clear">
+                <img class="icon" src="./assets/icons/clear_black_24dp.svg" alt="Clear" />
+              </div>
             </div>
           </div>
         </div>
