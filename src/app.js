@@ -1,14 +1,24 @@
 import L from 'leaflet';
 import { bind } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import pinImage from 'url:./assets/icons/location_pin.svg';
+import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 
 let map;
-const marker = new L.marker();
+const locationIcon = new L.icon({
+  iconUrl: pinImage,
+  shadowUrl: pinShadowImage,
+
+  iconSize: [48, 48], // size of the icon
+  shadowSize: [48, 48], // size of the shadow
+  iconAnchor: [24, 48], // point of the icon which will correspond to marker's location
+  shadowAnchor: [24, 48], // the same for the shadow
+  popupAnchor: [24, 0], // point from which the popup should open relative to the iconAnchor
+});
+const marker = new L.marker([0, 0], { icon: locationIcon });
+
 /**
  * initialize the application
- * @param  {Number} num1 The first number
- * @param  {Number} num2 The second number
- * @return {Number}      The total of the two numbers
  */
 function init() {
   // configure tile layer
@@ -19,7 +29,7 @@ function init() {
 
   let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
     detectRetina: true,
-    opacity: .5,
+    opacity: 0.5,
   });
 
   // create map
@@ -51,7 +61,7 @@ function init() {
   for (let link of asideHeaderButtons) link.addEventListener('click', loadPage);
 
   const clearLocationBtn = document.querySelector('#map__contents__navigate__search .icon[alt="Clear"]');
-  clearLocationBtn.addEventListener("click", clearLocation);
+  clearLocationBtn.addEventListener('click', clearLocation);
 }
 
 /**
@@ -74,21 +84,21 @@ function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
   // update search field input
-    const mapEl = document.getElementById('map');
-    delete mapEl.dataset.detailsClosed;
+  const mapEl = document.getElementById('map');
+  delete mapEl.dataset.detailsClosed;
 
   // load and open details view
 }
 
 function clearLocation(event) {
-    const mapEl = document.getElementById('map');
-    mapEl.dataset.detailsClosed = '';
+  const mapEl = document.getElementById('map');
+  mapEl.dataset.detailsClosed = '';
 
-    //clear search field input
+  //clear search field input
 
-    // close details view
+  // close details view
 
-    console.log("clear location")
+  console.log('clear location');
 }
 
 /**
