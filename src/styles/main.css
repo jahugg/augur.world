@@ -253,9 +253,7 @@
     grid-area: 2 / 1 / 4 / 2;
   }
 }
-#map__contents__details__graph {
-  height: 400px;
-  border: solid 1px red;
+#map__contents__details__graph {  
 }
 #map__contents__details__actions {
   list-style-type: none;
