@@ -1,8 +1,11 @@
 import L from 'leaflet';
-import { bind } from 'leaflet';
+import { transformation } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import pinImage from 'url:./assets/icons/location_pin.svg';
 import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
+
+// static data file for demonstration purpose
+import locationData from './locationData.json';
 
 let map;
 const locationIcon = new L.icon({
@@ -88,6 +91,11 @@ function setLocation(latlng) {
   delete mapEl.dataset.detailsClosed;
 
   // load and open details view
+
+  const locationData = fetchLocationData(latlng);
+  const precipitationGraph = getPrecipitationGraph(locationData);
+  const graphContainer = document.getElementById('map__contents__details__graph');
+  graphContainer.replaceChildren(precipitationGraph);
 }
 
 function clearLocation(event) {
@@ -122,4 +130,100 @@ function toggleAside(targetState) {
   else app.hasAttribute(attr) ? app.removeAttribute(attr) : app.setAttribute(attr, '');
 }
 
+/**
+ * fetch location data from server
+ * @return {Object}      Object with lat and lng coordinates
+ * @todo replace static json data with live server request.
+ */
+function fetchLocationData(latlng) {
+  let data = {};
+  data = locationData;
+  return data;
+}
+
+function getPrecipitationGraph(data) {
+  const defaultPeriod = 2030;
+
+  // get max value and column count
+  const values = [];
+  for (let key in data.period[defaultPeriod].years) {
+    values.push(data.period[defaultPeriod].years[key].present);
+    values.push(data.period[defaultPeriod].years[key].climate_change);
+  }
+
+  const maxValue = Math.max(...values);
+  const columnCount = Object.keys(data.period[defaultPeriod].years).length;
+
+  // start drawing
+  const graphHeight = 300;
+  const unit = graphHeight / maxValue;
+  //   let maxY = Math.ceil(maxValue / 10) * 10;
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const graphEl = document.createElementNS(xmlns, 'svg');
+  graphEl.classList.add('graph');
+  graphEl.setAttributeNS(null, 'height', graphHeight);
+  graphEl.setAttributeNS(null, 'shape-rendering', 'crispEdges');
+  //   graphEl.setAttributeNS(null, "viewBox", "0 0 " + this.width + " " + this.height);
+  graphEl.setAttributeNS(null, 'version', '1.1');
+
+
+//   console.log(getComputedStyle(document.querySelector("b")).getPropertyValue("--my-custom-property-2"));
+
+  // draw scale
+  // make us of <pattern> tag instead
+  const scale = document.createElementNS(xmlns, 'g');
+  scale.classList.add('precipitation-graph__scale');
+  graphEl.appendChild(scale);
+
+  let yStepSizePx = unit * 10;
+  let count = graphHeight / yStepSizePx;
+  for (let i = 0; i <= count; i++) {
+    let y = i * yStepSizePx;
+    let line = document.createElementNS(xmlns, 'line');
+    line.classList.add('x-line');
+    line.setAttributeNS(null, 'x1', '0');
+    line.setAttributeNS(null, 'x2', '100%');
+    line.setAttributeNS(null, 'y1', y);
+    line.setAttributeNS(null, 'y2', y);
+
+    scale.appendChild(line);
+  }
+
+  // draw columns
+  const columns = document.createElementNS(xmlns, 'g');
+  columns.classList.add('precipitation-graph__columns');
+  graphEl.appendChild(columns);
+
+  let yearObj = data.period[defaultPeriod].years;
+  let xStepSizePct = 100 / (columnCount + 1);
+  let index = 1;
+  for (let years in yearObj) {
+    let value = unit * yearObj[years].present;
+    let xPos = index * xStepSizePct;
+    let rect = document.createElementNS(xmlns, 'rect');
+    rect.classList.add('rect-present');
+    rect.setAttributeNS(null, 'x', `${xPos}%`);
+    rect.setAttributeNS(null, 'height', value);
+
+    columns.appendChild(rect);
+
+    let label = document.createElementNS(xmlns, 'text');
+    label.classList.add('column-label');
+    label.setAttributeNS(null, 'x', `${xPos}%`);
+    label.setAttributeNS(null, 'y', -10);
+    label.textContent = years;
+
+    columns.appendChild(label);
+
+    index++;
+  }
+
+  return graphEl;
+}
+
 init();
+
+// helpers
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+  return ((this - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+};
