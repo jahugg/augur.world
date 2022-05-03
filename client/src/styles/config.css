@@ -34,7 +34,7 @@ button {
   --color-black: rgba(0, 0, 0);
   --color-white: rgba(255, 255, 255);
   --color-grey-01: hsl(0, 0%, 97%);
-  --color-grey-01: hsl(0, 0%, 90%);
+  --color-grey-02: hsl(0, 0%, 90%);
 
   /* spacing */
   --spacer: 6px;

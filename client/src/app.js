@@ -15,7 +15,7 @@ const locationIcon = new L.icon({
   popupAnchor: [24, 0], // point from which the popup should open relative to the iconAnchor
 });
 const marker = new L.marker([0, 0], { icon: locationIcon });
-const defaultPage = 'dashboard';
+const defaultPage = 'home';
 const pages = {
   home: {
     title: 'Home',
