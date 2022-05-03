@@ -1,0 +1,77 @@
+{
+    "period": {
+      "2030": {
+        "years": {
+          "10": {
+            "present": "88",
+            "climate_change": "94"
+          },
+          "20": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "30": {
+            "present": "112",
+            "climate_change": "120"
+          },
+          "50": {
+            "present": "122",
+            "climate_change": "128"
+          },
+          "100": {
+            "present": "125",
+            "climate_change": "130"
+          }
+        }
+      },
+      "2040": {
+        "years": {
+          "10": {
+            "present": "88",
+            "climate_change": "94"
+          },
+          "20": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "30": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "50": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "100": {
+            "present": "99",
+            "climate_change": "105"
+          }
+        }
+      },
+      "2050": {
+        "years": {
+          "10": {
+            "present": "88",
+            "climate_change": "94"
+          },
+          "20": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "30": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "50": {
+            "present": "99",
+            "climate_change": "105"
+          },
+          "100": {
+            "present": "99",
+            "climate_change": "105"
+          }
+        }
+      }
+    }
+  }
+  
