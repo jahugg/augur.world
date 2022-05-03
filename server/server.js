@@ -11,10 +11,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 /**
- * Endpoint to fetch precipitationa nd flooding data from database
+ * Endpoint to fetch precipitation/flooding data from database
  * @param  {String} lat latitude of location
  * @param  {String} lng longitude of location
- * @return {JSON} json object with precipitation and flooding data for location
+ * @return {JSON} json object containing precipitation/flooding data for location
  */
 app.get('/api/location', async (req, res) => {
   const { lat, lng } = req.query;

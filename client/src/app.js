@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import { transformation } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import pinImage from 'url:./assets/icons/location_pin.svg';
 import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
@@ -16,11 +15,38 @@ const locationIcon = new L.icon({
   popupAnchor: [24, 0], // point from which the popup should open relative to the iconAnchor
 });
 const marker = new L.marker([0, 0], { icon: locationIcon });
+const defaultPage = 'dashboard';
+const pages = {
+  home: {
+    title: 'Home',
+    slug: '/',
+    module: import('./modules/page-home.js'),
+  },
+  language: {
+    title: 'Language',
+    slug: '/language',
+    module: import('./modules/page-language.js'),
+  },
+  about: {
+    title: 'About',
+    slug: '/about',
+    module: import('./modules/page-about.js'),
+  },
+};
 
 /**
  * initialize the application
  */
 function init() {
+  document.addEventListener('DOMContentLoaded', function () {
+    navigateToCurrentURL();
+  });
+
+  window.addEventListener('popstate', (event) => {
+    let stateObj = { pageKey: event.state.pageKey };
+    buildPage(stateObj, false);
+  });
+
   // configure tile layer
   let baseLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png', {
     attribution: `attribution: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>`,
@@ -57,22 +83,62 @@ function init() {
   let closeMenuBtn = document.getElementById('map__close');
   closeMenuBtn.addEventListener('click', toggleAside.bind('close'));
 
-  let asideHeaderButtons = document.querySelectorAll('#aside nav a');
-  for (let link of asideHeaderButtons) link.addEventListener('click', loadPage);
+  let asideHeaderButtons = document.querySelectorAll('#aside header nav a');
+  for (let link of asideHeaderButtons) link.addEventListener('click', onClickPageLink);
 
   const clearLocationBtn = document.querySelector('#map__contents__navigate__search .icon[alt="Clear"]');
   clearLocationBtn.addEventListener('click', clearLocation);
+}
+
+function navigateToCurrentURL() {
+  let urlSlug = window.location.pathname;
+  let pageKey = defaultPage;
+  for (let key in pages) if (pages[key].slug === urlSlug) pageKey = key;
+  let stateObj = { pageKey: pageKey };
+  buildPage(stateObj, false);
 }
 
 /**
  * loading the contents of a new page within the aside section
  * @param  {Object} event Event that triggered the function
  */
-function loadPage(event) {
-  const targetLink = event.target.closest('a');
-  const parent = targetLink.closest('nav');
-  for (let child of parent.children) delete child.dataset.selected;
-  targetLink.dataset.selected = '';
+async function buildPage(stateObj, addToHistory) {
+  let pageKey = stateObj.pageKey;
+  let page = pages[pageKey];
+  document.title = 'Augur | ' + page.title;
+
+  // mark current link as selected
+  const navigation = document.querySelector('#aside nav');
+  for (let child of navigation.children) delete child.dataset.selected;
+  navigation.querySelector(`a[href="${page.slug}"]`).dataset.selected = '';
+
+  // update URL and history
+  if (addToHistory) history.pushState(stateObj, '', page.slug);
+
+  // load module contents
+  const target = document.getElementById('aside__content');
+  const module = await page.module;
+  const content = await module.default(); // render
+  target.replaceChildren(content);
+  module.init?.(); // only run if function exists
+}
+
+/**
+ * prevent default link behaviour and trigger page loading
+ * @param  {Event} event Event that triggered the function
+ */
+function onClickPageLink(event) {
+  event.preventDefault();
+  const link = event.target.closest('a');
+  const slug = link.getAttribute('href');
+
+  // find corresponding page object
+  let pageKey;
+  for (const key in pages) if (pages[key].slug === slug) pageKey = key;
+
+  // define stateobj and buildpage
+  const stateObj = { pageKey: pageKey };
+  buildPage(stateObj, true);
 }
 
 /**
@@ -83,6 +149,8 @@ function loadPage(event) {
 async function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
+  // update url
+
   // update search field input
   const mapEl = document.getElementById('map');
   delete mapEl.dataset.detailsClosed;
@@ -90,7 +158,7 @@ async function setLocation(latlng) {
   // load and open details view
   let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
   const locationData = await fetchLocationData(latlngOfLima);
-  const precipitationGraph = getPrecipitationGraph(locationData);
+  const precipitationGraph = drawPrecipitationGraph(locationData);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -137,7 +205,7 @@ async function fetchLocationData(latlng) {
   return await response.json();
 }
 
-function getPrecipitationGraph(data) {
+function drawPrecipitationGraph(data) {
   const defaultPeriod = 2030;
 
   // get max value and column count

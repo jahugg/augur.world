@@ -59,7 +59,7 @@
   flex: 0 0 auto;
   width: calc(100vw - var(--padding-mobile-overlap));
   transition: width 0.3s ease-out;
-  padding: var(--padding-default) 0;
+  overflow: scroll;
 
   & #aside__header,
   & #aside__content {
@@ -81,16 +81,14 @@
 
   & nav {
     display: flex;
-    padding: 0 var(--padding-default);
+    padding: var(--padding-default);
     overflow: scroll;
     gap: 5px;
-    padding-right: 100px;
   }
 
   & a {
     --border-width: 0.15em;
     font: var(--font-regular);
-    display: inline-block;
     border: solid var(--border-width) var(--color-black);
     padding: calc(var(--space-rel-s) - var(--border-width)) var(--space-rel-m);
     border-radius: 3em;
