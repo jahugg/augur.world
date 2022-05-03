@@ -4,9 +4,6 @@ import 'leaflet/dist/leaflet.css';
 import pinImage from 'url:./assets/icons/location_pin.svg';
 import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 
-// static data file for demonstration purpose
-import locationData from './locationData.json';
-
 let map;
 const locationIcon = new L.icon({
   iconUrl: pinImage,
@@ -83,7 +80,7 @@ function loadPage(event) {
  * @param  {Object} latlnt Coorinates of the new location as {lat:x, lng:y}
  * @todo update everything related to the new location
  */
-function setLocation(latlng) {
+async function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
   // update search field input
@@ -91,8 +88,8 @@ function setLocation(latlng) {
   delete mapEl.dataset.detailsClosed;
 
   // load and open details view
-
-  const locationData = fetchLocationData(latlng);
+  let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
+  const locationData = await fetchLocationData(latlngOfLima);
   const precipitationGraph = getPrecipitationGraph(locationData);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
@@ -135,10 +132,9 @@ function toggleAside(targetState) {
  * @return {Object}      Object with lat and lng coordinates
  * @todo replace static json data with live server request.
  */
-function fetchLocationData(latlng) {
-  let data = {};
-  data = locationData;
-  return data;
+async function fetchLocationData(latlng) {
+  const response = await fetch(`${process.env.SERVER}/api/location?lat=${latlng.lat}&lng=${latlng.lng}`);
+  return await response.json();
 }
 
 function getPrecipitationGraph(data) {
@@ -166,8 +162,7 @@ function getPrecipitationGraph(data) {
   //   graphEl.setAttributeNS(null, "viewBox", "0 0 " + this.width + " " + this.height);
   graphEl.setAttributeNS(null, 'version', '1.1');
 
-
-//   console.log(getComputedStyle(document.querySelector("b")).getPropertyValue("--my-custom-property-2"));
+  //   console.log(getComputedStyle(document.querySelector("b")).getPropertyValue("--my-custom-property-2"));
 
   // draw scale
   // make us of <pattern> tag instead
