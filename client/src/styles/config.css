@@ -52,6 +52,7 @@ button {
   --padding-default: var(--space-l);
   --padding-mobile-overlap: var(--space-m);
   --aside-max-width: 440px;
+  --details-max-width: 600px;
 
 
   /* text */

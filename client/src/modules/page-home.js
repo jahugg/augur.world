@@ -10,7 +10,16 @@ export default function render() {
         dolor blanditiis quasi architecto in ad non, sunt culpa reiciendis corrupti.
       </p>
     </article>
-    <footer>legend</footer>`;
+    <footer>
+    Precipitation [mm|day] 
+    <div id="legend">
+    <div id="legend__colors"></div>
+      <div id="legend__scale">
+        <span id="legend__scale__min">0</span>
+        <span id="legend__scale__max">1000</span>
+      </div>
+    </div>
+    </footer>`;
 
   return module;
 }
