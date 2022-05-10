@@ -88,6 +88,9 @@ function init() {
 
   const clearLocationBtn = document.querySelector('#map__contents__navigate__search .icon[alt="Clear"]');
   clearLocationBtn.addEventListener('click', clearLocation);
+
+  const detailsHandler = document.querySelector('#map__contents__details__drag-handle');
+  detailsHandler.addEventListener('click', handleDetailsPosition);
 }
 
 function navigateToCurrentURL() {
@@ -96,6 +99,15 @@ function navigateToCurrentURL() {
   for (let key in pages) if (pages[key].slug === urlSlug) pageKey = key;
   let stateObj = { pageKey: pageKey };
   buildPage(stateObj, false);
+}
+
+/**
+ * handle/toggle details position
+ * @param  {Object} event Event that triggered the function
+ */
+function handleDetailsPosition(event) {
+  const mapEl = document.getElementById('map');
+  mapEl.hasAttribute('data-details-as-sheet') ? delete mapEl.dataset.detailsAsSheet : mapEl.dataset.detailsAsSheet = '';
 }
 
 /**
@@ -166,6 +178,7 @@ async function setLocation(latlng) {
 function clearLocation(event) {
   const mapEl = document.getElementById('map');
   mapEl.dataset.detailsClosed = '';
+  mapEl.dataset.detailsAsSheet = '';
 
   //clear search field input
 

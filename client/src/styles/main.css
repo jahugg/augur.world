@@ -8,8 +8,8 @@
 @custom-media --device-mouse (color), (hover);
 @custom-media --window-mobile (width <= 800px);
 @custom-media --window-narrow (width > 800px);
-@custom-media --map-fullscreen (width > 500px);
-@custom-media --map-aside (width > 900px);
+@custom-media --map-without-details (width > 500px);
+@custom-media --map-with-details (width > 900px);
 
 /**
  * general
@@ -148,10 +148,6 @@
   }
 }
 
-.leaflet-marker-icon {
-  filter: invert(64%) sepia(49%) saturate(651%) hue-rotate(347deg) brightness(96%) contrast(97%);
-}
-
 /**
  * map
  */
@@ -259,7 +255,7 @@
     display: contents;
   }
 
-  @media (--map-aside) {
+  @media (--map-with-details) {
     grid-area: 2 / 1 / 4 / 2;
   }
 }
@@ -282,6 +278,7 @@
   & li {
     width: 50%;
     color: var(--color-primary);
+    background: var(--color-white);
   }
 
   & li[data-selected] {
@@ -337,8 +334,32 @@
     background: var(--color-primary);
   }
 }
+#map__contents__details__drag-handle {
+  flex: 0 0 auto;
+  background: var(--color-grey-02);
+  height: var(--space-l);
+  display: block;
+  position: relative;
+  cursor: pointer;
+
+  &:after {
+    content: '';
+    background: rgba(0, 0, 0, 0.1);
+    width: 40%;
+    height: 4px;
+    min-width: 40px;
+    position: absolute;
+    top: var(--space-s);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+  }
+
+  @media (--map-without-details) {
+    display: none;
+  }
+}
 #map__contents__navigate {
-  --search-width: 300px;
   grid-area: 1 / 1 / 2 / 4;
   display: flex;
   gap: var(--space-xs);
@@ -347,7 +368,7 @@
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(5px);
 
-  @media (--map-aside) {
+  @media (--map-with-details) {
     grid-area: 1 / 1 / 2 / 2;
   }
 }
@@ -408,6 +429,13 @@
   }
 }
 
+.leaflet-marker-icon {
+  filter: invert(64%) sepia(49%) saturate(651%) hue-rotate(347deg) brightness(96%) contrast(97%);
+}
+
+/**
+ * Aside Page Styles
+ */
 #aside #home {
   display: flex;
   height: 100%;
@@ -446,7 +474,7 @@
 * size and grid behaviour. To be considered in the future.
 **/
 #app[data-aside-closed] {
-  @media (--map-fullscreen) {
+  @media (--map-without-details) {
     & #map__contents__navigate {
       grid-area: 1 / 1 / 2 / 2;
     }
@@ -473,5 +501,22 @@
 
   & #map__contents__period {
     grid-area: 3 / 1 / 4 / 2;
+  }
+}
+
+#map[data-details-as-sheet] {
+  @media not (--map-without-details) {
+    & #map__contents__navigate {
+      background: none;
+    }
+    & #map__contents__details {
+      --sheet-height: 445px;
+
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      position: absolute;
+      box-shadow: var(--card-shadow);
+      top: calc(100% - var(--sheet-height));
+    }
   }
 }
