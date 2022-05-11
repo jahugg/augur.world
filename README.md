@@ -27,10 +27,14 @@ yarn install
 ```
 
 # Set environment variables
-- create .env file in client directory with content
+- create `.env` file in `myDir/client` directory with desired SERVER URL variable
+
+example:
 `SERVER=http://localhost:3000`
 
-- create .env file in server directory with content
+- create `.env` file in `myDir/server` directory with corresponding PORT variable
+
+example:
 `PORT=3000`
 
 # Run Application
