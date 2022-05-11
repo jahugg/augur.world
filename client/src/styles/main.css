@@ -59,7 +59,8 @@
   flex: 0 0 auto;
   width: calc(100vw - var(--padding-mobile-overlap));
   transition: width 0.3s ease-out;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 
@@ -329,9 +330,10 @@
   & select {
     padding: var(--space-rel-s);
     font: inherit;
-    color: white;
+    color: var(--color-black);
     border: none;
-    background: var(--color-primary);
+    background: var(--color-grey-01);
+    border-radius: var(--card-border-radius);
   }
 }
 #map__contents__details__drag-handle {
@@ -401,30 +403,34 @@
 .graph {
   width: 100%;
   --height: 300px;
-  transform: scale(1, -1);
 
-  & text {
-    transform: scale(1, -1);
-    fill: var(--color-grey-02);
-  }
-
-  & .x-line {
+  & .row-line {
     stroke-width: 1px;
     stroke: var(--color-grey-02);
-  }
-
-  & .precipitation-graph__columns {
-    width: 200px;
-    height: 100%;
   }
 
   & .rect-present {
     fill: var(--color-primary);
     width: 30px;
     transform: translateX(-15px);
+    transition: all 0.1s ease-out;
+  }
+
+  & .column {
+    cursor: pointer;
+
+    & .column-value {
+      transition: all 0.1s ease-out;
+    }
 
     &:hover {
-      fill: red;
+      & .column-value {
+        transform: scale(1.02);
+      }
+
+      & .rect-present {
+        fill: var(--color-primary-light);
+      }
     }
   }
 }

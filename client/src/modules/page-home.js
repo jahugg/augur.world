@@ -11,7 +11,7 @@ export default function render() {
       </p>
     </article>
     <footer>
-    Precipitation [mm|day] 
+    Precipitation [mm/day]
     <div id="legend">
     <div id="legend__colors"></div>
       <div id="legend__scale">

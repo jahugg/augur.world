@@ -91,6 +91,9 @@ function init() {
 
   const detailsHandler = document.querySelector('#map__contents__details__drag-handle');
   detailsHandler.addEventListener('click', handleDetailsPosition);
+
+  // for testing
+  // setLocation({ lat: -12.101622, lng: -76.985037 });
 }
 
 function navigateToCurrentURL() {
@@ -107,7 +110,7 @@ function navigateToCurrentURL() {
  */
 function handleDetailsPosition(event) {
   const mapEl = document.getElementById('map');
-  mapEl.hasAttribute('data-details-as-sheet') ? delete mapEl.dataset.detailsAsSheet : mapEl.dataset.detailsAsSheet = '';
+  mapEl.hasAttribute('data-details-as-sheet') ? delete mapEl.dataset.detailsAsSheet : (mapEl.dataset.detailsAsSheet = '');
 }
 
 /**
@@ -161,6 +164,8 @@ function onClickPageLink(event) {
 async function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
+  // pan to location on map...
+
   // update url
 
   // update search field input
@@ -181,10 +186,7 @@ function clearLocation(event) {
   mapEl.dataset.detailsAsSheet = '';
 
   //clear search field input
-
   // close details view
-
-  console.log('clear location');
 }
 
 /**
@@ -233,6 +235,9 @@ function drawPrecipitationGraph(data) {
 
   // start drawing
   const graphHeight = 300;
+  const xLabelHeight = 30;
+  const yLabelWidth = 30;
+  const fontSize = 15;
   const unit = graphHeight / maxValue;
   //   let maxY = Math.ceil(maxValue / 10) * 10;
   const xmlns = 'http://www.w3.org/2000/svg';
@@ -243,53 +248,93 @@ function drawPrecipitationGraph(data) {
   //   graphEl.setAttributeNS(null, "viewBox", "0 0 " + this.width + " " + this.height);
   graphEl.setAttributeNS(null, 'version', '1.1');
 
+  // create svg definitions
+  // const defs = document.createElementNS(xmlns, 'defs');
+  // graphEl.appendChild(defs);
+
+  // // grid pattern
+  // let gridPattern = document.createElementNS(xmlns, 'pattern');
+  // graphEl.setAttributeNS(null, 'width', '100%');
+  // graphEl.setAttributeNS(null, 'height', unit * 10);
+  // defs.appendChild(gridPattern);
+
+  // let rect = document.createElementNS(xmlns, 'rect');
+  // rect.setAttributeNS(null, 'x', `${xPos}%`);
+  // rect.setAttributeNS(null, 'height', value);
+  // gridPattern.appendChild(rect)
+
   //   console.log(getComputedStyle(document.querySelector("b")).getPropertyValue("--my-custom-property-2"));
 
   // draw scale
   // make us of <pattern> tag instead
-  const scale = document.createElementNS(xmlns, 'g');
+  let scale = document.createElementNS(xmlns, 'g');
   scale.classList.add('precipitation-graph__scale');
   graphEl.appendChild(scale);
 
   let yStepSizePx = unit * 10;
   let count = graphHeight / yStepSizePx;
   for (let i = 0; i <= count; i++) {
-    let y = i * yStepSizePx;
+    let yPos = i * yStepSizePx;
+
+    let row = document.createElementNS(xmlns, 'g');
+    row.setAttributeNS(null, 'transform', `translate( 0, ${yPos} )`);
+    scale.appendChild(row);
+
     let line = document.createElementNS(xmlns, 'line');
-    line.classList.add('x-line');
+    line.classList.add('row-line');
     line.setAttributeNS(null, 'x1', '0');
     line.setAttributeNS(null, 'x2', '100%');
-    line.setAttributeNS(null, 'y1', y);
-    line.setAttributeNS(null, 'y2', y);
+    line.setAttributeNS(null, 'y1', 0);
+    line.setAttributeNS(null, 'y2', 0);
+    row.appendChild(line);
 
-    scale.appendChild(line);
+    let rowLabel = document.createElementNS(xmlns, 'text');
+    rowLabel.classList.add('row-label');
+    rowLabel.setAttributeNS(null, 'x', 0);
+    rowLabel.setAttributeNS(null, 'y', fontSize);
+    rowLabel.textContent = i * 10;
+    row.appendChild(rowLabel);
   }
 
   // draw columns
-  const columns = document.createElementNS(xmlns, 'g');
+  let columns = document.createElementNS(xmlns, 'g');
   columns.classList.add('precipitation-graph__columns');
   graphEl.appendChild(columns);
 
   let yearObj = data.period[defaultPeriod].years;
   let xStepSizePct = 100 / (columnCount + 1);
   let index = 1;
+
   for (let years in yearObj) {
-    let value = unit * yearObj[years].present;
+    let value = yearObj[years].present;
+    let valuePx = unit * value;
     let xPos = index * xStepSizePct;
+
+    let column = document.createElementNS(xmlns, 'g');
+    column.classList.add('column');
+    column.setAttributeNS(null, 'transform', `translate( 0, 0 )`);
+    columns.appendChild(column);
+
     let rect = document.createElementNS(xmlns, 'rect');
     rect.classList.add('rect-present');
     rect.setAttributeNS(null, 'x', `${xPos}%`);
-    rect.setAttributeNS(null, 'height', value);
+    rect.setAttributeNS(null, 'y', 0);
+    rect.setAttributeNS(null, 'height', valuePx);
+    column.appendChild(rect);
 
-    columns.appendChild(rect);
+    let columnLabel = document.createElementNS(xmlns, 'text');
+    columnLabel.classList.add('column-label');
+    columnLabel.setAttributeNS(null, 'x', `${xPos}%`);
+    columnLabel.setAttributeNS(null, 'y', fontSize);
+    columnLabel.textContent = years + 'y';
+    column.appendChild(columnLabel);
 
-    let label = document.createElementNS(xmlns, 'text');
-    label.classList.add('column-label');
-    label.setAttributeNS(null, 'x', `${xPos}%`);
-    label.setAttributeNS(null, 'y', -10);
-    label.textContent = years;
-
-    columns.appendChild(label);
+    let valueLabel = document.createElementNS(xmlns, 'text');
+    valueLabel.classList.add('column-value');
+    valueLabel.setAttributeNS(null, 'x', `${xPos}%`);
+    valueLabel.setAttributeNS(null, 'y', valuePx);
+    valueLabel.textContent = value;
+    column.appendChild(valueLabel);
 
     index++;
   }
@@ -299,7 +344,7 @@ function drawPrecipitationGraph(data) {
 
 init();
 
-// helpers
+// helper functions
 Number.prototype.map = function (in_min, in_max, out_min, out_max) {
   return ((this - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
