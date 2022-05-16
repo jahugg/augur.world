@@ -403,10 +403,15 @@
 .graph {
   width: 100%;
   --height: 300px;
+  border: solid 1px red;
 
   & .row-line {
     stroke-width: 1px;
     stroke: var(--color-grey-02);
+  }
+
+  & .row-labelbg {
+    fill: white;
   }
 
   & .rect-present {
@@ -431,6 +436,53 @@
       & .rect-present {
         fill: var(--color-primary-light);
       }
+    }
+  }
+}
+
+.graph-precip {
+
+  --rect-width: 35px;
+  border: solid 1px red;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 0px 0px;
+  grid-template-areas:
+    'rowLabels graph'
+    '. columnLabels';
+
+  & .row-label-section {
+    grid-area: rowLabels;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  & .column-label-section {
+    grid-area: columnLabels;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    & .column-label {
+      text-align: center;
+      width: var(--rect-width);
+    }
+  }
+
+  & .graph-section {
+    grid-area: graph;
+    background: lightgrey;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    & .graph-item {
+      align-self: flex-end;
+      background: var(--color-primary);
+      color: white;
+      width: var(--rect-width);
+      text-align: center;
     }
   }
 }

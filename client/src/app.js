@@ -93,7 +93,7 @@ function init() {
   detailsHandler.addEventListener('click', handleDetailsPosition);
 
   // for testing
-  // setLocation({ lat: -12.101622, lng: -76.985037 });
+  setLocation({ lat: -12.101622, lng: -76.985037 });
 }
 
 function navigateToCurrentURL() {
@@ -175,7 +175,8 @@ async function setLocation(latlng) {
   // load and open details view
   let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
   const locationData = await fetchLocationData(latlngOfLima);
-  const precipitationGraph = drawPrecipitationGraph(locationData);
+  // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -220,7 +221,7 @@ async function fetchLocationData(latlng) {
   return await response.json();
 }
 
-function drawPrecipitationGraph(data) {
+function drawPrecipitationGraphSVG(data) {
   const defaultPeriod = 2030;
 
   // get max value and column count
@@ -243,7 +244,7 @@ function drawPrecipitationGraph(data) {
   const xmlns = 'http://www.w3.org/2000/svg';
   const graphEl = document.createElementNS(xmlns, 'svg');
   graphEl.classList.add('graph');
-  graphEl.setAttributeNS(null, 'height', graphHeight);
+  graphEl.setAttributeNS(null, 'height', graphHeight + xLabelHeight);
   graphEl.setAttributeNS(null, 'shape-rendering', 'crispEdges');
   //   graphEl.setAttributeNS(null, "viewBox", "0 0 " + this.width + " " + this.height);
   graphEl.setAttributeNS(null, 'version', '1.1');
@@ -288,12 +289,20 @@ function drawPrecipitationGraph(data) {
     line.setAttributeNS(null, 'y2', 0);
     row.appendChild(line);
 
-    let rowLabel = document.createElementNS(xmlns, 'text');
-    rowLabel.classList.add('row-label');
-    rowLabel.setAttributeNS(null, 'x', 0);
-    rowLabel.setAttributeNS(null, 'y', fontSize);
-    rowLabel.textContent = i * 10;
-    row.appendChild(rowLabel);
+    let labelBg = document.createElementNS(xmlns, 'rect');
+    labelBg.classList.add('row-labelbg');
+    labelBg.setAttributeNS(null, 'x', 0);
+    labelBg.setAttributeNS(null, 'y', fontSize - yStepSizePx);
+    labelBg.setAttributeNS(null, 'width', yLabelWidth);
+    labelBg.setAttributeNS(null, 'height', fontSize);
+    row.appendChild(labelBg);
+
+    let label = document.createElementNS(xmlns, 'text');
+    label.classList.add('row-label');
+    label.setAttributeNS(null, 'x', 0);
+    label.setAttributeNS(null, 'y', fontSize - yStepSizePx / 2);
+    label.textContent = parseInt((count - i) * 10);
+    row.appendChild(label);
   }
 
   // draw columns
@@ -340,6 +349,69 @@ function drawPrecipitationGraph(data) {
   }
 
   return graphEl;
+}
+
+function drawPrecipitactionGraphDOM(data) {
+  const defaultPeriod = 2030;
+  const rowLabelStepSize = 10;
+
+  // get max value and column count
+  const values = [];
+  for (let key in data.period[defaultPeriod].years) {
+    values.push(data.period[defaultPeriod].years[key].present);
+    values.push(data.period[defaultPeriod].years[key].climate_change);
+  }
+
+  const maxValue = Math.max(...values);
+  const ceiledMaxValue = Math.ceil(maxValue / rowLabelStepSize) * rowLabelStepSize;
+  const rowCount = ceiledMaxValue / rowLabelStepSize;
+  const yearObj = data.period[defaultPeriod].years;
+  const unitPct = 100 / ceiledMaxValue;
+
+  let graph = document.createElement('div');
+  graph.classList.add('graph-precip');
+
+  // draw row labels
+  let rowLabelSection = document.createElement('div');
+  rowLabelSection.classList.add('row-label-section');
+  graph.appendChild(rowLabelSection);
+
+  for (let i = 0; i <= rowCount; i++) {
+    let rowLabel = document.createElement('div');
+    rowLabel.classList.add('row-label');
+    rowLabel.innerHTML = i * rowLabelStepSize;
+    rowLabelSection.appendChild(rowLabel);
+  }
+
+  // draw column labels
+  let columnLabelSection = document.createElement('div');
+  columnLabelSection.classList.add('column-label-section');
+  graph.appendChild(columnLabelSection);
+
+  for (let years in yearObj) {
+    let columnLabel = document.createElement('div');
+    columnLabel.classList.add('column-label');
+    columnLabel.innerHTML = years;
+    columnLabelSection.appendChild(columnLabel);
+  }
+
+  // draw graph items
+  let graphSection = document.createElement('div');
+  graphSection.classList.add('graph-section');
+  graph.appendChild(graphSection);
+
+  for (let years in yearObj) {
+    let value = yearObj[years].present;
+    let valuePct = value * unitPct;
+
+    let rect = document.createElement('div');
+    rect.classList.add('graph-item');
+    rect.style.height = valuePct+'%';
+    rect.innerHTML = value;
+    graphSection.appendChild(rect);
+  }
+
+  return graph;
 }
 
 init();
