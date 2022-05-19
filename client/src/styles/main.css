@@ -399,8 +399,13 @@
     }
   }
 }
+#map__contents__details__description {
+  padding: var(--space-m) var(--padding-default);
+  font: var(--font-small);
+  color: var(--color-black);
+}
 
-.graph {
+/* .graph {
   width: 100%;
   --height: 300px;
   border: solid 1px red;
@@ -438,24 +443,81 @@
       }
     }
   }
-}
+} */
 
 .graph-precip {
-
   --rect-width: 35px;
-  border: solid 1px red;
+  --graph-height: 300px;
+  --row-label-width: 35px;
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto var(--graph-height) auto;
   gap: 0px 0px;
+  color: var(--color-black);
+  font: var(--font-small);
   grid-template-areas:
+    'header header'
     'rowLabels graph'
     '. columnLabels';
 
+  & .header {
+    grid-area: header;
+    margin-bottom: 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+    & .legend {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+
+      & li:before {
+        content: '';
+        display: inline-block;
+        background: var(--color-primary);
+        width: 1em;
+        height: 1em;
+        margin-right: var(--space-xs);
+      }
+
+      & li:first-child:before {
+        background: var(--color-primary-light);
+      }
+    }
+  }
+
   & .row-label-section {
+    height: 100%;
     grid-area: rowLabels;
     display: flex;
     flex-direction: column-reverse;
+    justify-content: space-between;
+
+    & .row-label {
+      position: relative;
+      width: var(--row-label-width);
+    }
+
+    & .row-label:nth-child(2n+1):after {
+      content: attr(data-value);
+      position: absolute;
+      right: 0.5em;
+      transform: translateY(-50%);
+    }
+  }
+
+  & .row-lines-section {
+    grid-area: graph;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    & .row-line {
+      height: 1px;
+      background: lightgrey;
+      width: 100%;
+    }
   }
 
   & .column-label-section {
@@ -467,22 +529,34 @@
     & .column-label {
       text-align: center;
       width: var(--rect-width);
+
+      &:after {
+        content: 'y';
+      }
     }
   }
 
   & .graph-section {
+    height: 100%;
     grid-area: graph;
-    background: lightgrey;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-self: end;
 
     & .graph-item {
       align-self: flex-end;
-      background: var(--color-primary);
+      background: ;
       color: white;
       width: var(--rect-width);
       text-align: center;
+      background: var(--color-primary-light);
+      cursor: pointer;
+      transition: background 1s ease-out;
+    }
+
+    &.graph-section-layer .graph-item {
+      background: linear-gradient(180deg, var(--color-primary) 0%, transparent 100%);
     }
   }
 }

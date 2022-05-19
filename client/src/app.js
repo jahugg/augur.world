@@ -371,44 +371,83 @@ function drawPrecipitactionGraphDOM(data) {
   let graph = document.createElement('div');
   graph.classList.add('graph-precip');
 
-  // draw row labels
+  // draw header
+  let header = document.createElement('div');
+  header.classList.add('header');
+  graph.appendChild(header);
+
+  let units = document.createElement('div');
+  units.classList.add('units');
+  units.innerHTML = "[mm/day]";
+  header.appendChild(units);
+
+  let legend = document.createElement('ul');
+  legend.classList.add('legend');
+  legend.innerHTML = `<li>Present</li>
+    <li>Climate Change</li>`;
+  header.appendChild(legend);
+
+  // draw row labels and row lines
   let rowLabelSection = document.createElement('div');
   rowLabelSection.classList.add('row-label-section');
   graph.appendChild(rowLabelSection);
 
+  let rowLinesSection = document.createElement('div');
+  rowLinesSection.classList.add('row-lines-section');
+  graph.appendChild(rowLinesSection);
+
   for (let i = 0; i <= rowCount; i++) {
     let rowLabel = document.createElement('div');
     rowLabel.classList.add('row-label');
-    rowLabel.innerHTML = i * rowLabelStepSize;
+    // rowLabel.innerHTML = i * rowLabelStepSize;
+    rowLabel.dataset.value = i * rowLabelStepSize;
     rowLabelSection.appendChild(rowLabel);
+
+    let rowLine = document.createElement('div');
+    rowLine.classList.add('row-line');
+    rowLinesSection.appendChild(rowLine);
   }
 
-  // draw column labels
+  // draw column labels container
   let columnLabelSection = document.createElement('div');
   columnLabelSection.classList.add('column-label-section');
   graph.appendChild(columnLabelSection);
 
+  // draw graph items container (layer one)
+  let graphSectionOne = document.createElement('div');
+  graphSectionOne.classList.add('graph-section');
+  graph.appendChild(graphSectionOne);
+
+  // draw graph items container (layer two)
+  let graphSectionTwo = document.createElement('div');
+  graphSectionTwo.classList.add('graph-section');
+  graphSectionTwo.classList.add('graph-section-layer');
+  graph.appendChild(graphSectionTwo);
+
   for (let years in yearObj) {
+    // draw column labels
     let columnLabel = document.createElement('div');
     columnLabel.classList.add('column-label');
     columnLabel.innerHTML = years;
     columnLabelSection.appendChild(columnLabel);
-  }
 
-  // draw graph items
-  let graphSection = document.createElement('div');
-  graphSection.classList.add('graph-section');
-  graph.appendChild(graphSection);
-
-  for (let years in yearObj) {
-    let value = yearObj[years].present;
+    // draw graph items (layer one)
+    let value = yearObj[years].climate_change;
     let valuePct = value * unitPct;
-
     let rect = document.createElement('div');
     rect.classList.add('graph-item');
     rect.style.height = valuePct+'%';
     rect.innerHTML = value;
-    graphSection.appendChild(rect);
+    graphSectionOne.appendChild(rect);
+
+    // draw graph items (layer one)
+    value = yearObj[years].present;
+    valuePct = value * unitPct;
+    rect = document.createElement('div');
+    rect.classList.add('graph-item');
+    rect.style.height = valuePct+'%';
+    rect.innerHTML = value;
+    graphSectionTwo.appendChild(rect);
   }
 
   return graph;
