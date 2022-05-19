@@ -36,6 +36,7 @@ button {
   --color-white: rgba(255, 255, 255);
   --color-grey-01: hsl(0, 0%, 97%);
   --color-grey-02: hsl(0, 0%, 90%);
+  --color-grey-03: hsl(0, 0%, 70%);
 
   /* spacing */
   --spacer: 6px;

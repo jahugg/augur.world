@@ -93,7 +93,7 @@ function init() {
   detailsHandler.addEventListener('click', handleDetailsPosition);
 
   // for testing
-  setLocation({ lat: -12.101622, lng: -76.985037 });
+  // setLocation({ lat: -12.101622, lng: -76.985037 });
 }
 
 function navigateToCurrentURL() {

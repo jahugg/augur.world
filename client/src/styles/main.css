@@ -402,7 +402,7 @@
 #map__contents__details__description {
   padding: var(--space-m) var(--padding-default);
   font: var(--font-small);
-  color: var(--color-black);
+  color: var(--color-grey-03);
 }
 
 /* .graph {
@@ -499,7 +499,7 @@
       width: var(--row-label-width);
     }
 
-    & .row-label:nth-child(2n+1):after {
+    & .row-label:nth-child(2n + 1):after {
       content: attr(data-value);
       position: absolute;
       right: 0.5em;
@@ -543,6 +543,7 @@
     flex-direction: row;
     justify-content: space-around;
     align-self: end;
+    pointer-events: none;
 
     & .graph-item {
       align-self: flex-end;
@@ -551,12 +552,37 @@
       width: var(--rect-width);
       text-align: center;
       background: var(--color-primary-light);
+      pointer-events: auto;
       cursor: pointer;
-      transition: background 1s ease-out;
+      position: relative;
+
+      /* for gradient effect only */
+      &:after {
+        content: '';
+        background: red;
+        background: linear-gradient(0deg, rgba(255,255,255, .4) 0%, transparent 100%);
+        display: inline-block;
+        width: 100%;
+        height: 50%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transition: all 0.4s ease-out;
+      }
+
+      &:hover {
+        z-index: 10;
+
+        &:after {
+          opacity: 0;
+        }
+      }
     }
 
     &.graph-section-layer .graph-item {
-      background: linear-gradient(180deg, var(--color-primary) 0%, transparent 100%);
+      background: var(--color-primary);
+      box-shadow: var(--card-shadow);
+      transform: translateX(calc(var(--rect-width) * 0.2));
     }
   }
 }
