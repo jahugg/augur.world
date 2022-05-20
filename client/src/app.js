@@ -221,6 +221,11 @@ async function fetchLocationData(latlng) {
   return await response.json();
 }
 
+/**
+ * SVG rendering has been halted due to responsivness issues
+ * @return {SVG Element}      SVG Element containing the graph
+ * @todo finish responsive svg drawing
+ */
 function drawPrecipitationGraphSVG(data) {
   const defaultPeriod = 2030;
 
@@ -351,6 +356,12 @@ function drawPrecipitationGraphSVG(data) {
   return graphEl;
 }
 
+/**
+ * rendering the location data as a graph for precipitation events
+ * for now SVG has been replaced with DOM elements for faster development.
+ * @return {DOM Element}      DOM Element containing the graph
+ * @todo Replace this with SVG in the future
+ */
 function drawPrecipitactionGraphDOM(data) {
   const defaultPeriod = 2030;
   const rowLabelStepSize = 10;
@@ -383,8 +394,8 @@ function drawPrecipitactionGraphDOM(data) {
 
   let legend = document.createElement('ul');
   legend.classList.add('legend');
-  legend.innerHTML = `<li>Present</li>
-    <li>Climate Change</li>`;
+  legend.innerHTML = `<li>Climate Change</li>
+    <li>Present</li>`;
   header.appendChild(legend);
 
   // draw row labels and row lines
