@@ -560,7 +560,7 @@
       &:after {
         content: '';
         background: red;
-        background: linear-gradient(0deg, rgba(255,255,255, .4) 0%, transparent 100%);
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
         display: inline-block;
         width: 100%;
         height: 50%;
@@ -675,6 +675,12 @@
       position: absolute;
       box-shadow: var(--card-shadow);
       top: calc(100% - var(--sheet-height));
+    }
+    & .graph-precip {
+      --graph-height: 240px;
+    }
+    & #map__contents__details__description {
+      display: none;
     }
   }
 }
