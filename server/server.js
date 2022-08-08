@@ -32,7 +32,7 @@ app.listen(process.env.PORT);
  */
 async function selectLocation(lat, lng) {
   try {
-    const query = db.prepare('SELECT * FROM augur WHERE latitude = ? AND longitude = ?');
+    const query = db.prepare('SELECT * FROM augur ORDER BY ABS(latitude - ?), ABS(longitude - ?) LIMIT 1');
     const result = query.get(lat, lng);
     return result;
   } catch (error) {
