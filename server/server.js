@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import Database from 'better-sqlite3';
 
 dotenv.config();
-const db = new Database('/Users/gaskar/Documents/augur.sqlite');
+const db = new Database(process.env.DB_PATH);
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -38,7 +38,6 @@ async function selectLocation(lat, lng) {
     const result = db.prepare(`SELECT * FROM augur ORDER BY ABS(latitude - ${lat}), ABS(longitude - ${lng}) LIMIT 1`).get();
     // const result = await query.get(lat, lng);
 
-    console.log(result);
     const years = [2030, 2040, 2050];
     const periods = [10, 20, 30, 50, 100];
     
@@ -66,82 +65,6 @@ async function selectLocation(lat, lng) {
   }
 }
 
-/*
 
-{
-    "period": {
-      "2030": {
-        "years": {
-          "10": {
-            "present": "88",
-            "climate_change": "94"
-          },
-          "20": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "30": {
-            "present": "112",
-            "climate_change": "120"
-          },
-          "50": {
-            "present": "122",
-            "climate_change": "128"
-          },
-          "100": {
-            "present": "125",
-            "climate_change": "133"
-          }
-        }
-      },
-      "2040": {
-        "years": {
-          "10": {
-            "present": "88",
-            "climate_change": "94"
-          },
-          "20": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "30": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "50": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "100": {
-            "present": "99",
-            "climate_change": "105"
-          }
-        }
-      },
-      "2050": {
-        "years": {
-          "10": {
-            "present": "88",
-            "climate_change": "94"
-          },
-          "20": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "30": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "50": {
-            "present": "99",
-            "climate_change": "105"
-          },
-          "100": {
-            "present": "99",
-            "climate_change": "105"
-          }
-        }
-      }
-    }
-  }
-  */
+
+  
