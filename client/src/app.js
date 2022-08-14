@@ -1,7 +1,5 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-// import 'leaflet/node_modules/leaflet-geosearch/dist/geosearch.css';
-import * as GeoSearch from 'leaflet-geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 import pinImage from 'url:./assets/icons/location_pin.svg';
@@ -86,8 +84,8 @@ function init() {
 
   // add event listeners
   // selecting location (use long press for touch devices)
-  if (is_touch_enabled()) map.addEventListener('contextmenu', (event) => setLocation(event.latlng));
-  else map.addEventListener('click', (event) => setLocation(event.latlng));
+  if (is_touch_enabled()) map.addEventListener('contextmenu', (event) => setLocation([event.latlng?.lat, event?.latlng?.lng]));
+  else map.addEventListener('click', (event) => setLocation([event.latlng?.lat, event?.latlng?.lng]));
 
   let menuBtn = document.getElementById('map__contents__navigate__menu-toggle');
   menuBtn.addEventListener('click', toggleAside);
@@ -108,16 +106,15 @@ function init() {
   periodHandler.addEventListener('change', handlePeriodValue);
 
   const findHandler = document.getElementById('map__contents__navigate__search__input');
-  findHandler.addEventListener('input', handleFind);
+  findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
   findHandler.addEventListener('keydown', handleKeyDownFind);
 
-  // for testing
-  // setLocation({ lat: -12.101622, lng: -76.985037 });
 }
 
-function getToPosition(position) {
+async function getToPosition(position) {
   map.flyTo([position.coords.latitude, position.coords.longitude], 5);
   marker.setLatLng([position.coords.latitude, position.coords.longitude]).addTo(map)
+  await setLocation([position.coords.latitude, position.coords.longitude]);
 }
 
 function navigateToCurrentURL() {
@@ -129,8 +126,8 @@ function navigateToCurrentURL() {
 }
 function closeAllLists(elmnt) {
   const inp = document.getElementById('map__contents__navigate__search__input');
-  var x = document.getElementsByClassName("autocomplete-items");
-  for (var i = 0; i < x.length; i++) {
+  let x = document.getElementsByClassName("autocomplete-items");
+  for (let i = 0; i < x.length; i++) {
     if (elmnt != x[i] && elmnt != inp) {
       x[i].parentNode.removeChild(x[i]);
     }
@@ -138,7 +135,7 @@ function closeAllLists(elmnt) {
 }
 
 function handleKeyDownFind(e) {
-  var x = document.getElementById(this.id + "autocomplete-list");
+  let x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
       if (e.keyCode == 40) {
         currentFocus++;
@@ -154,6 +151,15 @@ function handleKeyDownFind(e) {
       }
 }
 
+
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
 function addActive(x) {
   if (!x) return false;
   removeActive(x);
@@ -161,32 +167,46 @@ function addActive(x) {
   if (currentFocus < 0) currentFocus = (x.length - 1);
   x[currentFocus].classList.add("autocomplete-active");
 }
+
 function removeActive(x) {
   for (var i = 0; i < x.length; i++) {
     x[i].classList.remove("autocomplete-active");
   }
 }
+
 async function handleFind(event) {
+  console.log("searching", this);
   const arr = await provider.search({ query: event.target.value });
-  var a, b, i, val = this.value;
   const inp = this;
+
+  let a, b, i, val = this.value;
   if (!val) { return false;}
+
   closeAllLists();
   currentFocus = -1;
-  a = document.createElement("DIV");
+  
+  a = document.createElement("div");
   a.setAttribute("id", this.id + "autocomplete-list");
   a.setAttribute("class", "autocomplete-items");
+
   this.parentNode.appendChild(a);
-  const arrayLenght = arr.length > 4 ? 4 : arr.length;
-  for (i = 0; i < arrayLenght; i++) {
+  const arrayLength = arr.length > 4 ? 4 : arr.length;
+  for (i = 0; i < arrayLength; i++) {
     b = document.createElement("DIV");
     b.innerHTML = "<strong>" + arr[i].label.substr(0, val.length) + "</strong>";
     b.innerHTML += arr[i].label.substr(val.length);
-    b.innerHTML += "<input type='hidden' value='" + arr[i].label + "'>";
+    b.innerHTML += "<input type='hidden' value='" + arr[i].label + "' name='label' />";
+    b.innerHTML += `<input type='hidden' value='${arr[i].y}' name='lat' />`;
+    b.innerHTML += `<input type='hidden' value='${arr[i].x}' name='lng' />`;
+
     b.addEventListener("click", async function(e) {
-        inp.value = this.getElementsByTagName("input")[0].value;
-        await setLocation([arr[i].x, arr[i].y]);
+        inp.value = this.querySelector("input[name=label]")?.value;
+
+        const latLng = [this.querySelector("input[name=lat]")?.value, this.querySelector("input[name=lng]")?.value];
         closeAllLists();
+
+        await setLocation(latLng);
+
     });
     a.appendChild(b);
   }
@@ -256,10 +276,11 @@ function onClickPageLink(event) {
 
 /**
  * setting a new location on the map
- * @param  {Object} latlnt Coorinates of the new location as {lat:x, lng:y}
+ * @param  {Object} latlng Coorinates of the new location as [lat, lng]
  * @todo update everything related to the new location
  */
 async function setLocation(latlng) {
+  console.log(latlng);
   marker.setLatLng(latlng).addTo(map);
 
   // pan to location on map...
@@ -317,7 +338,7 @@ function toggleAside(targetState) {
  * @todo replace static json data with live server request.
  */
 async function fetchLocationData(latlng) {
-  const response = await fetch(`${process.env.SERVER}/api/location?lat=${latlng[0]}&lng=${latlng[1]}`);
+  const response = await fetch(`${process.env.SERVER}/location?lat=${latlng[0]}&lng=${latlng[1]}`);
   return await response.json();
 }
 
