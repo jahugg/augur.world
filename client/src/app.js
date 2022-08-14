@@ -7,6 +7,7 @@ import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 
 let map;
 let augurLayer;
+let currentFocus;
 
 // setup
 const provider = new OpenStreetMapProvider();
@@ -175,7 +176,6 @@ function removeActive(x) {
 }
 
 async function handleFind(event) {
-  console.log("searching", this);
   const arr = await provider.search({ query: event.target.value });
   const inp = this;
 
