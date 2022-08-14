@@ -12,7 +12,8 @@
     "build": "parcel build"
   },
   "dependencies": {
-    "leaflet": "^1.8.0"
+    "leaflet": "^1.8.0",
+    "leaflet-geosearch": "^3.6.1"
   },
   "devDependencies": {
     "parcel": "^2.4.1"

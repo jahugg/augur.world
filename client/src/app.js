@@ -1,9 +1,17 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+// import 'leaflet/node_modules/leaflet-geosearch/dist/geosearch.css';
+import * as GeoSearch from 'leaflet-geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+
 import pinImage from 'url:./assets/icons/location_pin.svg';
 import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 
 let map;
+let augurLayer;
+
+// setup
+const provider = new OpenStreetMapProvider();
 const locationIcon = new L.icon({
   iconUrl: pinImage,
   shadowUrl: pinShadowImage,
@@ -53,10 +61,14 @@ function init() {
     detectRetina: true,
   });
 
-  let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
+  augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles50/{z}/{x}/{-y}.png', {
     detectRetina: true,
     opacity: 0.5,
   });
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(getToPosition);
+  }
 
   // create map
   map = new L.Map('map__contents__tiles', {
@@ -92,8 +104,20 @@ function init() {
   const detailsHandler = document.querySelector('#map__contents__details__drag-handle');
   detailsHandler.addEventListener('click', handleDetailsPosition);
 
+  const periodHandler = document.getElementById('map__contents__period');
+  periodHandler.addEventListener('change', handlePeriodValue);
+
+  const findHandler = document.getElementById('map__contents__navigate__search__input');
+  findHandler.addEventListener('input', handleFind);
+  findHandler.addEventListener('keydown', handleKeyDownFind);
+
   // for testing
   // setLocation({ lat: -12.101622, lng: -76.985037 });
+}
+
+function getToPosition(position) {
+  map.flyTo([position.coords.latitude, position.coords.longitude], 5);
+  marker.setLatLng([position.coords.latitude, position.coords.longitude]).addTo(map)
 }
 
 function navigateToCurrentURL() {
@@ -102,6 +126,80 @@ function navigateToCurrentURL() {
   for (let key in pages) if (pages[key].slug === urlSlug) pageKey = key;
   let stateObj = { pageKey: pageKey };
   buildPage(stateObj, false);
+}
+function closeAllLists(elmnt) {
+  const inp = document.getElementById('map__contents__navigate__search__input');
+  var x = document.getElementsByClassName("autocomplete-items");
+  for (var i = 0; i < x.length; i++) {
+    if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+
+function handleKeyDownFind(e) {
+  var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        currentFocus++;
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        currentFocus--;
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        e.preventDefault();
+        if (currentFocus > -1) {
+          if (x) x[currentFocus].click();
+        }
+      }
+}
+
+function addActive(x) {
+  if (!x) return false;
+  removeActive(x);
+  if (currentFocus >= x.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = (x.length - 1);
+  x[currentFocus].classList.add("autocomplete-active");
+}
+function removeActive(x) {
+  for (var i = 0; i < x.length; i++) {
+    x[i].classList.remove("autocomplete-active");
+  }
+}
+async function handleFind(event) {
+  const arr = await provider.search({ query: event.target.value });
+  var a, b, i, val = this.value;
+  const inp = this;
+  if (!val) { return false;}
+  closeAllLists();
+  currentFocus = -1;
+  a = document.createElement("DIV");
+  a.setAttribute("id", this.id + "autocomplete-list");
+  a.setAttribute("class", "autocomplete-items");
+  this.parentNode.appendChild(a);
+  const arrayLenght = arr.length > 4 ? 4 : arr.length;
+  for (i = 0; i < arrayLenght; i++) {
+    b = document.createElement("DIV");
+    b.innerHTML = "<strong>" + arr[i].label.substr(0, val.length) + "</strong>";
+    b.innerHTML += arr[i].label.substr(val.length);
+    b.innerHTML += "<input type='hidden' value='" + arr[i].label + "'>";
+    b.addEventListener("click", async function(e) {
+        inp.value = this.getElementsByTagName("input")[0].value;
+        await setLocation([arr[i].x, arr[i].y]);
+        closeAllLists();
+    });
+    a.appendChild(b);
+  }
+}
+
+/**
+ * handle/select period value
+ * @param  {Object} event Event that triggered the function
+ */
+function handlePeriodValue(event) {
+  const mapEl = document.getElementById('map');
+  const period = event.target.value;
+  augurLayer.setUrl(`https://obellprat.github.io/tilesaugur/tiles${period}/{z}/{x}/{-y}.png`);
 }
 
 /**
@@ -165,7 +263,7 @@ async function setLocation(latlng) {
   marker.setLatLng(latlng).addTo(map);
 
   // pan to location on map...
-
+  map.flyTo(latlng, 5);
   // update url
 
   // update search field input
@@ -173,8 +271,8 @@ async function setLocation(latlng) {
   delete mapEl.dataset.detailsClosed;
 
   // load and open details view
-  let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
-  const locationData = await fetchLocationData(latlngOfLima);
+  // let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
+  const locationData = await fetchLocationData(latlng);
   // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
   const precipitationGraph = drawPrecipitactionGraphDOM(locationData);
   const graphContainer = document.getElementById('map__contents__details__graph');
@@ -185,8 +283,10 @@ function clearLocation(event) {
   const mapEl = document.getElementById('map');
   mapEl.dataset.detailsClosed = '';
   mapEl.dataset.detailsAsSheet = '';
-
+  closeAllLists();
   //clear search field input
+  const searchInput = document.getElementById('map__contents__navigate__search__input');
+  searchInput.value = null;
   // close details view
 }
 
@@ -217,7 +317,7 @@ function toggleAside(targetState) {
  * @todo replace static json data with live server request.
  */
 async function fetchLocationData(latlng) {
-  const response = await fetch(`${process.env.SERVER}/api/location?lat=${latlng.lat}&lng=${latlng.lng}`);
+  const response = await fetch(`${process.env.SERVER}/api/location?lat=${latlng[0]}&lng=${latlng[1]}`);
   return await response.json();
 }
 
@@ -365,6 +465,8 @@ function drawPrecipitationGraphSVG(data) {
 function drawPrecipitactionGraphDOM(data) {
   const defaultPeriod = 2030;
   const rowLabelStepSize = 10;
+
+  console.log(data);
 
   // get max value and column count
   const values = [];
