@@ -35,7 +35,7 @@ app.listen(process.env.PORT);
 async function selectLocation(lat, lng) {
   try {
     // console.log(`SELECT latitude, longitude FROM augur ORDER BY ABS(latitude - ${lat}), ABS(longitude - ${lng}) LIMIT 1`);
-    const result = db.prepare(`SELECT * FROM augur ORDER BY ABS(latitude - ${lat}), ABS(longitude - ${lng}) LIMIT 1`).get();
+    const result = db.prepare(`SELECT * FROM data WHERE lat in (SELECT lat FROM latitude ORDER BY ABS(lat -  ${lat}) LIMIT 1) AND lon in (SELECT lon FROM longitude ORDER BY ABS(lon - ${lng}) LIMIT 1);`).get();
     // const result = await query.get(lat, lng);
 
     const years = [2030, 2040, 2050];
