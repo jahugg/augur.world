@@ -25,11 +25,11 @@
           <div id="map__contents__period">
             <label class="card"
               >Return Period
-              <select>
+              <select name="tiles_period">
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
-                <option value="50" selected>50</option>
+                <option value="50" >50</option>
                 <option value="100">100</option>
               </select>
             </label>
@@ -47,6 +47,7 @@
               </div>
               <div id="map__contents__details__description">Expected daily maximum precipitation.</div>
               <div id="map__contents__details__graph">Graph</div>
+              <div class="lds-dual-ring"></div>
               <div id="map__contents__details__drag-handle"></div>
               <ul id="map__contents__details__settings">
                 <!-- <li>
@@ -58,10 +59,10 @@
                 <li>
                   <label
                     >Climate Change Period
-                    <select>
+                    <select name="climate_change_period">
                       <option value="2030">2030</option>
                       <option value="2040">2040</option>
-                      <option value="2050" selected>2050</option>
+                      <option value="2050">2050</option>
                     </select>
                   </label>
                 </li>
@@ -77,7 +78,10 @@
                   <button type="button"><img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" /></button>
                 </li>
                 <li>
-                  <button type="button"><img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" /></button>
+                  <button type="button" name="share" class="tooltip">
+                    <img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" />
+                    <label class="tooltiptext">Copied!</label>
+                  </button>
                 </li>
                 <li>
                   <button type="button"><img class="icon" src="./assets/icons/print_black_24dp.svg" alt="Print" /></button>

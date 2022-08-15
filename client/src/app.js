@@ -8,6 +8,10 @@ import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 let map;
 let augurLayer;
 let currentFocus;
+let locationData;
+let latlong;
+let tilesPeriod = 50;
+let defaultYear = 2030;
 
 // setup
 const provider = new OpenStreetMapProvider();
@@ -60,14 +64,15 @@ function init() {
     detectRetina: true,
   });
 
-  augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles50/{z}/{x}/{-y}.png', {
+  if (Boolean(location.search) && location.search.includes('period')) {
+    const period = (new URLSearchParams(location.search)).get('period');
+    if (['10', '20', '30', '100'].includes(period)) tilesPeriod = period;
+    document.querySelector("select[name=tiles_period]").value = tilesPeriod;
+  }
+  augurLayer = L.tileLayer(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`, {
     detectRetina: true,
     opacity: 0.5,
   });
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(getToPosition);
-  }
 
   // create map
   map = new L.Map('map__contents__tiles', {
@@ -82,6 +87,19 @@ function init() {
     ],
     layers: [baseLayer, augurLayer],
   });
+
+  if (Boolean(location.search) && location.search.includes('lat') && location.search.includes('lng')) {
+    const lat = (new URLSearchParams(location.search)).get('lat');
+    const lng = (new URLSearchParams(location.search)).get('lng');
+    console.log(location.search.includes('year'), 'wwwwww');
+    if (location.search.includes('year')) {
+      const year = (new URLSearchParams(location.search)).get('year');
+      if (['2030', '2040', '2050'].includes(year))  defaultYear = year;
+    }
+    setLocation([lat, lng], defaultYear);
+  } else if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(getToPosition);
+  }
 
   // add event listeners
   // selecting location (use long press for touch devices)
@@ -106,6 +124,14 @@ function init() {
   const periodHandler = document.getElementById('map__contents__period');
   periodHandler.addEventListener('change', handlePeriodValue);
 
+  const shareHandler = document.querySelector('button[name=share]');
+  shareHandler.addEventListener('click', handleShareClick);
+
+  const climateChangeHandler = document.querySelector('select[name=climate_change_period]');
+  console.log(defaultYear,'qqqqqqq');
+  climateChangeHandler.value = defaultYear;
+  climateChangeHandler.addEventListener('change', handleClimateChange);
+
   const findHandler = document.getElementById('map__contents__navigate__search__input');
   findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
   findHandler.addEventListener('keydown', handleKeyDownFind);
@@ -116,6 +142,27 @@ async function getToPosition(position) {
   map.flyTo([position.coords.latitude, position.coords.longitude], 5);
   marker.setLatLng([position.coords.latitude, position.coords.longitude]).addTo(map)
   await setLocation([position.coords.latitude, position.coords.longitude]);
+}
+
+function handleShareClick (){
+  //get current url
+  const url = new URL(location.href);
+  //create new params pair
+  const new_params = new URLSearchParams({"lat": latlong[0], "lng": latlong[1], "period": tilesPeriod, "year": defaultYear});
+  const new_url = new URL(`${url.origin}${url.pathname}?${new_params}`);
+  navigator.clipboard.writeText(new_url);
+  document.querySelector("label[class=tooltiptext]").style.visibility= "visible";
+  setTimeout( function() {
+      document.querySelector("label[class=tooltiptext]").style.visibility = "hidden";
+  }, 1000);
+}
+
+function handleClimateChange(event) {
+  defaultYear = event.target.value;
+
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear);
+  const graphContainer = document.getElementById('map__contents__details__graph');
+  graphContainer.replaceChildren(precipitationGraph);
 }
 
 function navigateToCurrentURL() {
@@ -217,9 +264,10 @@ async function handleFind(event) {
  * @param  {Object} event Event that triggered the function
  */
 function handlePeriodValue(event) {
-  const mapEl = document.getElementById('map');
-  const period = event.target.value;
-  augurLayer.setUrl(`https://obellprat.github.io/tilesaugur/tiles${period}/{z}/{x}/{-y}.png`);
+  tilesPeriod = event.target.value;
+  console.log(tilesPeriod); 
+
+  augurLayer.setUrl(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`);
 }
 
 /**
@@ -279,10 +327,11 @@ function onClickPageLink(event) {
  * @param  {Object} latlng Coorinates of the new location as [lat, lng]
  * @todo update everything related to the new location
  */
-async function setLocation(latlng) {
-  console.log(latlng);
+async function setLocation(latlng, year = 2030) {
   marker.setLatLng(latlng).addTo(map);
-
+  latlong = latlng;
+  document.querySelector("div[class=lds-dual-ring]").style.display = "inline-block";
+  document.getElementById("map__contents__details__graph").style.display = "none";
   // pan to location on map...
   map.flyTo(latlng, 5);
   // update url
@@ -293,9 +342,9 @@ async function setLocation(latlng) {
 
   // load and open details view
   // let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
-  const locationData = await fetchLocationData(latlng);
+  locationData = await fetchLocationData(latlng);
   // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
-  const precipitationGraph = drawPrecipitactionGraphDOM(locationData);
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, year);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -483,12 +532,11 @@ function drawPrecipitationGraphSVG(data) {
  * @return {DOM Element}      DOM Element containing the graph
  * @todo Replace this with SVG in the future
  */
-function drawPrecipitactionGraphDOM(data) {
-  const defaultPeriod = 2030;
+function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030) {
   const rowLabelStepSize = 10;
 
-  console.log(data);
-
+  document.querySelector("div[class=lds-dual-ring]").style.display = "none";
+  document.getElementById("map__contents__details__graph").style.display = "inline-block";
   // get max value and column count
   const values = [];
   for (let key in data.period[defaultPeriod].years) {
