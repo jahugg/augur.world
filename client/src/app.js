@@ -12,6 +12,7 @@ let locationData;
 let latlong;
 let tilesPeriod = 50;
 let defaultYear = 2030;
+let uncertainty = false;
 
 // setup
 const provider = new OpenStreetMapProvider();
@@ -91,7 +92,6 @@ function init() {
   if (Boolean(location.search) && location.search.includes('lat') && location.search.includes('lng')) {
     const lat = (new URLSearchParams(location.search)).get('lat');
     const lng = (new URLSearchParams(location.search)).get('lng');
-    console.log(location.search.includes('year'), 'wwwwww');
     if (location.search.includes('year')) {
       const year = (new URLSearchParams(location.search)).get('year');
       if (['2030', '2040', '2050'].includes(year))  defaultYear = year;
@@ -128,9 +128,11 @@ function init() {
   shareHandler.addEventListener('click', handleShareClick);
 
   const climateChangeHandler = document.querySelector('select[name=climate_change_period]');
-  console.log(defaultYear,'qqqqqqq');
   climateChangeHandler.value = defaultYear;
   climateChangeHandler.addEventListener('change', handleClimateChange);
+
+  const uncertaintyChangeHandler = document.querySelector('input[name=uncertainty_check]');
+  uncertaintyChangeHandler.addEventListener('change', handleUncertainty);
 
   const findHandler = document.getElementById('map__contents__navigate__search__input');
   findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
@@ -160,7 +162,7 @@ function handleShareClick (){
 function handleClimateChange(event) {
   defaultYear = event.target.value;
 
-  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear);
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear, uncertainty);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -265,8 +267,6 @@ async function handleFind(event) {
  */
 function handlePeriodValue(event) {
   tilesPeriod = event.target.value;
-  console.log(tilesPeriod); 
-
   augurLayer.setUrl(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`);
 }
 
@@ -322,6 +322,13 @@ function onClickPageLink(event) {
   buildPage(stateObj, true);
 }
 
+function handleUncertainty(event) {
+  uncertainty = event.currentTarget.checked;
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear, uncertainty);
+  const graphContainer = document.getElementById('map__contents__details__graph');
+  graphContainer.replaceChildren(precipitationGraph);
+}
+
 /**
  * setting a new location on the map
  * @param  {Object} latlng Coorinates of the new location as [lat, lng]
@@ -341,10 +348,9 @@ async function setLocation(latlng, year = 2030) {
   delete mapEl.dataset.detailsClosed;
 
   // load and open details view
-  // let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
   locationData = await fetchLocationData(latlng);
   // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
-  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, year);
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, year, uncertainty);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -532,7 +538,7 @@ function drawPrecipitationGraphSVG(data) {
  * @return {DOM Element}      DOM Element containing the graph
  * @todo Replace this with SVG in the future
  */
-function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030) {
+function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) {
   const rowLabelStepSize = 10;
 
   document.querySelector("div[class=lds-dual-ring]").style.display = "none";
@@ -540,8 +546,10 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030) {
   // get max value and column count
   const values = [];
   for (let key in data.period[defaultPeriod].years) {
-    values.push(data.period[defaultPeriod].years[key].present);
+    const present = data.period[defaultPeriod].years[key].present;
+    values.push(present);
     values.push(data.period[defaultPeriod].years[key].climate_change);
+    if (uncert) values.push(present * 1.3);
   }
 
   const maxValue = Math.max(...values);
@@ -618,18 +626,48 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030) {
     let valuePct = value * unitPct;
     let rect = document.createElement('div');
     rect.classList.add('graph-item');
+    rect.classList.add('climate-item');
     rect.style.height = valuePct+'%';
     rect.innerHTML = value;
     graphSectionOne.appendChild(rect);
 
     // draw graph items (layer one)
-    value = yearObj[years].present;
-    valuePct = value * unitPct;
-    rect = document.createElement('div');
-    rect.classList.add('graph-item');
-    rect.style.height = valuePct+'%';
-    rect.innerHTML = value;
-    graphSectionTwo.appendChild(rect);
+    if (uncert) {
+      value = yearObj[years].present;
+      const rectText = value; //83
+      value = value * 1.3; //107
+      const uncerHeight = Math.ceil(100 - (rectText * 100 / value));
+      valuePct = value * unitPct;
+      rect = document.createElement('div');
+      const present = document.createElement('div');
+      const unc = document.createElement('div');
+      const overlap = document.createElement('div');
+      rect.classList.add('graph-item');
+      rect.style.height = valuePct+'%';
+      present.innerHTML = rectText;
+      present.classList.add('present-item');
+      present.style.height = (85 - uncerHeight) + '%';
+      unc.classList.add('uncert-item');
+      unc.style.height = uncerHeight + '%';
+      overlap.style.height = '15%';
+      overlap.classList.add('overlap-item');
+      unc.innerHTML = '<hr width="0" size="100%" style="margin-top: 0px;">';
+      overlap.innerHTML = '<hr width="0" size="100%" style="margin-top: 0px;">';
+      rect.appendChild(unc);
+      rect.appendChild(overlap);
+      rect.appendChild(present);
+      graphSectionTwo.appendChild(rect);
+    } else {
+      value = yearObj[years].present;
+      valuePct = value * unitPct;
+      rect = document.createElement('div');
+      rect.classList.add('graph-item');
+      rect.classList.add('present-item');
+      rect.style.height = valuePct+'%';
+      rect.innerHTML = value;
+      graphSectionTwo.appendChild(rect);
+  
+    }
   }
 
   return graph;
