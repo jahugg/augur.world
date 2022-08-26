@@ -681,19 +681,27 @@ input[type=submit] {
 
     &.graph-section-layer .present-item {
       background: var(--color-primary);
-      box-shadow: var(--card-shadow);
+      /* box-shadow: var(--card-shadow); */
       /* transform: translateX(calc(var(--rect-width) * 0.2)); */
     }
 
     &.graph-section-layer .graph-item .uncert-item {
       box-shadow: none !important;
-      border-top: 1px solid black;
+      border-top: 2px solid #17527c;
+      margin-left: 8px;
+      margin-right: 8px;
     }
 
     &.graph-section-layer .graph-item .overlap-item {
       box-shadow: var(--card-shadow);
-      border-bottom: 1px solid black;
       background-color: var(--color-primary);
+    }
+
+    &.graph-section-layer .graph-item .overlap-item-span {
+      border-bottom: 2px solid #17527c;
+      width: 21px;
+      display: inline-block;
+      margin-bottom: 14px;
     }
   }
 }

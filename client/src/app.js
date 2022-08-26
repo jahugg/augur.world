@@ -152,11 +152,29 @@ function handleShareClick (){
   //create new params pair
   const new_params = new URLSearchParams({"lat": latlong[0], "lng": latlong[1], "period": tilesPeriod, "year": defaultYear});
   const new_url = new URL(`${url.origin}${url.pathname}?${new_params}`);
-  navigator.clipboard.writeText(new_url);
-  document.querySelector("label[class=tooltiptext]").style.visibility= "visible";
-  setTimeout( function() {
-      document.querySelector("label[class=tooltiptext]").style.visibility = "hidden";
-  }, 1000);
+  var textArea = document.createElement("textarea");
+
+  textArea.style.position = 'fixed';
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+
+  textArea.value = new_url;
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    document.execCommand('copy');
+    document.querySelector("label[class=tooltiptext]").style.visibility= "visible";
+    setTimeout( function() {
+        document.querySelector("label[class=tooltiptext]").style.visibility = "hidden";
+    }, 1000);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+
+  document.body.removeChild(textArea);
 }
 
 function handleClimateChange(event) {
@@ -539,7 +557,7 @@ function drawPrecipitationGraphSVG(data) {
  * @todo Replace this with SVG in the future
  */
 function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) {
-  const rowLabelStepSize = 10;
+  let rowLabelStepSize = 10;
 
   document.querySelector("div[class=lds-dual-ring]").style.display = "none";
   document.getElementById("map__contents__details__graph").style.display = "inline-block";
@@ -553,6 +571,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
   }
 
   const maxValue = Math.max(...values);
+  if (maxValue > 299) rowLabelStepSize = 20;
   const ceiledMaxValue = Math.ceil(maxValue / rowLabelStepSize) * rowLabelStepSize;
   const rowCount = ceiledMaxValue / rowLabelStepSize;
   const yearObj = data.period[defaultPeriod].years;
@@ -642,6 +661,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       const present = document.createElement('div');
       const unc = document.createElement('div');
       const overlap = document.createElement('div');
+      const span = document.createElement('span');
       rect.classList.add('graph-item');
       rect.style.height = valuePct+'%';
       present.innerHTML = rectText;
@@ -651,8 +671,10 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       unc.style.height = uncerHeight + '%';
       overlap.style.height = '15%';
       overlap.classList.add('overlap-item');
-      unc.innerHTML = '<hr width="0" size="100%" style="margin-top: 0px;">';
-      overlap.innerHTML = '<hr width="0" size="100%" style="margin-top: 0px;">';
+      span.classList.add('overlap-item-span');
+      unc.innerHTML = '<hr width="3px" size="100%" style="margin-top: 0px; background-color: #17527c">';
+      overlap.innerHTML = '<hr width="3px" size="100%" style="margin: 0 auto; height: 85%; background-color: #17527c">';
+      overlap.appendChild(span);
       rect.appendChild(unc);
       rect.appendChild(overlap);
       rect.appendChild(present);
