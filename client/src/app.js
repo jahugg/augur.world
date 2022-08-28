@@ -28,6 +28,10 @@ const locationIcon = new L.icon({
 });
 const marker = new L.marker([0, 0], { icon: locationIcon });
 const defaultPage = 'home';
+// const languages = ['en', 'es', 'de'];
+
+let currentLang = 'en';
+
 const pages = {
   home: {
     title: 'Home',
@@ -46,10 +50,57 @@ const pages = {
   },
 };
 
+const languages = {
+  en: {
+    source: import('./i18n/en.json')
+  },
+  es: {
+    source: import('./i18n/es.json')
+  },
+  de: {
+    source: import('./i18n/de.json')
+  }
+}
+
 /**
  * initialize the application
  */
-function init() {
+
+async function translatePage() {
+  const language = (new URLSearchParams(location.search)).get('lang');
+
+  if(Object.keys(languages).indexOf(language) !== -1) {
+    const lang = await languages[language].source;
+
+    const keys = Object.keys(lang);
+
+    keys.forEach(key => {
+      console.log(`[data-translate='${key}']`);
+      const el = document.querySelector(`[data-translate='${key}']`);
+      if(el.nodeName === "INPUT") {
+        el.setAttribute("placeholder", lang[key]);
+      }
+      
+      else if (el) {
+        el.innerHTML = lang[key];
+      }
+    })
+
+  }
+}
+
+async function translate(key) {
+  const language = (new URLSearchParams(location.search)).get('lang');
+
+  if(Object.keys(languages).indexOf(language) !== -1) {
+    const lang = await languages[language].source;
+
+
+    return lang[key];
+  }
+}
+
+async function init() {
   document.addEventListener('DOMContentLoaded', function () {
     navigateToCurrentURL();
   });
@@ -70,6 +121,8 @@ function init() {
     if (['10', '20', '30', '100'].includes(period)) tilesPeriod = period;
     document.querySelector("select[name=tiles_period]").value = tilesPeriod;
   }
+
+  
   augurLayer = L.tileLayer(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`, {
     detectRetina: true,
     opacity: 0.5,
@@ -138,6 +191,11 @@ function init() {
   findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
   findHandler.addEventListener('keydown', handleKeyDownFind);
 
+  // document.querySelector(".languages-inputes-container").addEventListener("click", () => {
+  //   console.log(this);
+  // });
+
+  await translatePage();
 }
 
 async function getToPosition(position) {
@@ -319,7 +377,33 @@ async function buildPage(stateObj, addToHistory) {
   const module = await page.module;
   const content = await module.default(); // render
   target.replaceChildren(content);
-  module.init?.(); // only run if function exists
+  module.init?.(changeLanguage); // only run if function exists
+  await translatePage();
+}
+
+function changeLanguage() {
+  document.querySelector(".languages-inputes-container").addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    let inputEl = null;
+
+    if (event.target.nodeName === 'LABEL') {
+      inputEl = event.target.querySelector("input");
+    } else if (event.target.nodeName === "INPUT") {
+      inputEl = event.target;
+    }
+
+    if (inputEl) {
+
+      document.querySelectorAll(".languages-inputes-container input").forEach(el => {
+        el.removeAttribute("checked");
+      });
+
+      inputEl.setAttribute("checked", "checked");
+      console.log(inputEl.value);
+    }
+  })
 }
 
 /**

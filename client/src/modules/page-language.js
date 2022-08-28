@@ -3,18 +3,27 @@ export default function render() {
   module.classList.add('module');
   module.id = 'language';
   module.innerHTML = `
-    <label>
-      <input type="radio" name="language" value="en" checked>
-      English
-    </label>
-    <label>
-      <input type="radio" name="language" value="es">
-      Spanish
-    </label>
-    <label>
-      <input type="radio" name="language" value="es">
-      German
-    </label>`;
+    <div class='languages-inputes-container'>
+      <label>
+        <input type="radio" name="language" value="en" checked>
+        English
+      </label>
+      <label>
+        <input type="radio" name="language" value="es">
+        Spanish
+      </label>
+      <label>
+        <input type="radio" name="language" value="de">
+        German
+      </label>
+    </div>`;
 
+  
   return module;
 }
+
+export const init = (cb) => {
+  cb();
+}
+
+
