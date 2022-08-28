@@ -756,8 +756,8 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       overlap.style.height = '15%';
       overlap.classList.add('overlap-item');
       span.classList.add('overlap-item-span');
-      unc.innerHTML = '<hr width="3px" size="100%" style="margin-top: 0px; background-color: #17527c">';
-      overlap.innerHTML = '<hr width="3px" size="100%" style="margin: 0 auto; height: 85%; background-color: #17527c">';
+      unc.innerHTML = '<div style="width: 53%; height: 100%; margin-top: 0px; border-right: #17527c 1px solid;">&nbsp;</div>';
+      overlap.innerHTML = '<div style="width: 3%; height: 100%; margin: 0 auto; border-right: #17527c 1px solid;">&nbsp;</div>';
       overlap.appendChild(span);
       rect.appendChild(unc);
       rect.appendChild(overlap);
