@@ -60,7 +60,10 @@ const languages = {
   de: {
     source: import('./i18n/de.json')
   }
-}
+};
+
+let selectedLangFile = null;
+let fallBackLangFile = null;
 
 /**
  * initialize the application
@@ -71,33 +74,29 @@ async function translatePage() {
 
   if(Object.keys(languages).indexOf(language) !== -1) {
     const lang = await languages[language].source;
+    fallBackLangFile = await languages["en"].source;
+    selectedLangFile = lang;
 
     const keys = Object.keys(lang);
 
     keys.forEach(key => {
       console.log(`[data-translate='${key}']`);
       const el = document.querySelector(`[data-translate='${key}']`);
-      if(el.nodeName === "INPUT") {
-        el.setAttribute("placeholder", lang[key]);
+      if(el?.nodeName === "INPUT") {
+        el.setAttribute("placeholder", (lang[key] || fallBackLangFile[key]));
       }
       
       else if (el) {
-        el.innerHTML = lang[key];
+        el.innerHTML = lang[key] || fallBackLangFile[key];
       }
     })
 
   }
 }
 
-async function translate(key) {
-  const language = (new URLSearchParams(location.search)).get('lang');
-
-  if(Object.keys(languages).indexOf(language) !== -1) {
-    const lang = await languages[language].source;
-
-
-    return lang[key];
-  }
+function translate(key) {
+  console.log(selectedLangFile)
+  return selectedLangFile[key] || fallBackLangFile[key];
 }
 
 async function init() {
@@ -196,6 +195,10 @@ async function init() {
   // });
 
   await translatePage();
+}
+
+function goToPage(pageUrl) {
+  document.location.href = `/${pageUrl}`;
 }
 
 async function getToPosition(position) {
@@ -367,10 +370,13 @@ async function buildPage(stateObj, addToHistory) {
   // mark current link as selected
   const navigation = document.querySelector('#aside nav');
   for (let child of navigation.children) delete child.dataset.selected;
-  navigation.querySelector(`a[href="${page.slug}"]`).dataset.selected = '';
+  navigation.querySelector(`a[to="${page.slug}"]`).dataset.selected = '';
 
   // update URL and history
-  if (addToHistory) history.pushState(stateObj, '', page.slug);
+
+  const language = (new URLSearchParams(location.search)).get('lang');
+
+  if (addToHistory) history.pushState(stateObj, '', page.slug + "?lang=" + language);
 
   // load module contents
   const target = document.getElementById('aside__content');
@@ -378,6 +384,18 @@ async function buildPage(stateObj, addToHistory) {
   const content = await module.default(); // render
   target.replaceChildren(content);
   module.init?.(changeLanguage); // only run if function exists
+  const lang = new URLSearchParams(location.search).get('lang');
+
+  if (lang) {
+    document.querySelectorAll(".languages-inputes-container input").forEach(el => {
+      if(el.value === lang) {
+        el.setAttribute("checked", "checked");
+      } else {
+        el.removeAttribute("checked");
+      }
+    });
+
+  }
   await translatePage();
 }
 
@@ -401,7 +419,12 @@ function changeLanguage() {
       });
 
       inputEl.setAttribute("checked", "checked");
-      console.log(inputEl.value);
+      const url = new URL(location);
+
+      url.searchParams.set("lang", inputEl?.value);
+
+
+      document.location.href = url; 
     }
   })
 }
@@ -413,10 +436,12 @@ function changeLanguage() {
 function onClickPageLink(event) {
   event.preventDefault();
   const link = event.target.closest('a');
-  const slug = link.getAttribute('href');
+  const slug = link.getAttribute('to');
 
   // find corresponding page object
   let pageKey;
+
+  
   for (const key in pages) if (pages[key].slug === slug) pageKey = key;
 
   // define stateobj and buildpage
@@ -676,7 +701,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
 
   let legend = document.createElement('ul');
   legend.classList.add('legend');
-  legend.innerHTML = `<li>Climate Change</li>
+  legend.innerHTML = `<li>${translate('climate_change')}</li>
     <li>Present</li>`;
   header.appendChild(legend);
 
