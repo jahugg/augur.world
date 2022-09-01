@@ -80,7 +80,6 @@ async function translatePage() {
     const keys = Object.keys(lang);
 
     keys.forEach(key => {
-      console.log(`[data-translate='${key}']`);
       const el = document.querySelector(`[data-translate='${key}']`);
       if(el?.nodeName === "INPUT") {
         el.setAttribute("placeholder", (lang[key] || fallBackLangFile[key]));
@@ -95,8 +94,11 @@ async function translatePage() {
 }
 
 function translate(key) {
-  console.log(selectedLangFile)
-  return selectedLangFile[key] || fallBackLangFile[key];
+  if (selectedLangFile) {
+    return selectedLangFile[key];
+  }
+  
+  return fallBackLangFile[key];
 }
 
 async function init() {
@@ -193,6 +195,7 @@ async function init() {
   // document.querySelector(".languages-inputes-container").addEventListener("click", () => {
   //   console.log(this);
   // });
+  fallBackLangFile = await languages["en"].source;
 
   await translatePage();
 }
@@ -376,7 +379,7 @@ async function buildPage(stateObj, addToHistory) {
 
   const language = (new URLSearchParams(location.search)).get('lang');
 
-  if (addToHistory) history.pushState(stateObj, '', page.slug + "?lang=" + language);
+  if (addToHistory) history.pushState(stateObj, '', page.slug + (language ? "?lang=" + language : ""));
 
   // load module contents
   const target = document.getElementById('aside__content');
@@ -384,9 +387,11 @@ async function buildPage(stateObj, addToHistory) {
   const content = await module.default(); // render
   target.replaceChildren(content);
   module.init?.(changeLanguage); // only run if function exists
+
+
   const lang = new URLSearchParams(location.search).get('lang');
 
-  if (lang) {
+  if (lang && lang !== 'null') {
     document.querySelectorAll(".languages-inputes-container input").forEach(el => {
       if(el.value === lang) {
         el.setAttribute("checked", "checked");
