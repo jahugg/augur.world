@@ -694,7 +694,7 @@ input[type=submit] {
     }
 
     &.graph-section-layer .graph-item .overlap-item-span {
-      border-bottom: 1px solid #17527c;
+      border-top: 1px solid #17527c;
       width: 21px;
       display: inline-block;
       margin-bottom: 14px;
