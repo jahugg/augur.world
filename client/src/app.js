@@ -151,8 +151,6 @@ async function init() {
       if (['2030', '2040', '2050'].includes(year))  defaultYear = year;
     }
     setLocation([lat, lng], defaultYear);
-  } else if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(getToPosition);
   }
 
   // add event listeners
@@ -181,6 +179,12 @@ async function init() {
   const shareHandler = document.querySelector('button[name=share]');
   shareHandler.addEventListener('click', handleShareClick);
 
+  const downloadHandler = document.querySelector("button[name=download]");
+  downloadHandler.addEventListener("click", download);
+
+  const getLocationHandler = document.querySelector("button#getLocation");
+  getLocationHandler.addEventListener("click", getCurrentLocation);
+
   const climateChangeHandler = document.querySelector('select[name=climate_change_period]');
   climateChangeHandler.value = defaultYear;
   climateChangeHandler.addEventListener('change', handleClimateChange);
@@ -192,12 +196,15 @@ async function init() {
   findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
   findHandler.addEventListener('keydown', handleKeyDownFind);
 
-  // document.querySelector(".languages-inputes-container").addEventListener("click", () => {
-  //   console.log(this);
-  // });
   fallBackLangFile = await languages["en"].source;
 
   await translatePage();
+}
+
+function getCurrentLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(getToPosition);
+  }
 }
 
 function goToPage(pageUrl) {
@@ -283,13 +290,55 @@ function handleKeyDownFind(e) {
       }
 }
 
-
 function debounce(func, timeout = 300){
   let timer;
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => { func.apply(this, args); }, timeout);
   };
+}
+
+function generateFileContent() {
+
+  const years = Object.keys(locationData?.period);
+  const periods = Object.keys(locationData?.period[years[0]]?.years);
+
+  const values = periods.map((period) => {
+
+    let res = [`${period}-Year in today: ${locationData?.period[years[0]]?.years[period].present}`]
+    res = res.concat(years.map((year, index) => {
+      let str = "";
+      
+      str += `${period}-Year in ${year}: ${locationData?.period[year]?.years[period].climate_change}`;
+      return str;
+    }));
+
+    return res;
+  }).reduce((acc, arr) => {
+    return acc.concat(...arr);
+  }, []).join("\n");
+  
+  return `# Data downloaded by augur.world
+# Selected coordinates:
+lat = ${latlong[0]}, lon = ${latlong[1]}
+# Precipitation data
+${values}
+`;
+};
+
+function download() {
+  var element = document.createElement('a');
+
+  console.log(latlong);
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(generateFileContent()));
+  element.setAttribute('download', latlong[0] + " - " + latlong[1] + ".txt");
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
 }
 
 function addActive(x) {
@@ -305,6 +354,10 @@ function removeActive(x) {
     x[i].classList.remove("autocomplete-active");
   }
 }
+
+// pm2 start "npm run start-server" --name client
+// pm2 start --name server server.js
+// rm -rf dist && npm run build
 
 async function handleFind(event) {
   const arr = await provider.search({ query: event.target.value });

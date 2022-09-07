@@ -35,14 +35,15 @@
             </label>
           </div>
           <div id="map__contents__tools">
-            <button type="button" class="card"><img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" /></button>
+            <button type="button" class="card" id="getLocation">
+              <img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" />
+            </button>
           </div>
           <div id="map__contents__details">
             <section>
               <div id="map__contents__details__topic">
                 <ul>
                   <li data-selected><a href="#">Precipitation</a></li>
-                  <li><a href="#">Flooding</a></li>
                 </ul>
               </div>
               <div id="map__contents__details__description">Expected daily maximum precipitation.</div>
@@ -75,16 +76,15 @@
               </ul>
               <ul id="map__contents__details__actions">
                 <li>
-                  <button type="button"><img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" /></button>
+                  <button type="button" name="download">
+                    <img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" />
+                  </button>
                 </li>
                 <li>
                   <button type="button" name="share" class="tooltip">
                     <img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" />
                     <label class="tooltiptext">Copied!</label>
                   </button>
-                </li>
-                <li>
-                  <button type="button"><img class="icon" src="./assets/icons/print_black_24dp.svg" alt="Print" /></button>
                 </li>
               </ul>
             </section>

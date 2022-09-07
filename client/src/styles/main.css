@@ -353,7 +353,7 @@ input[type=submit] {
 #map__contents__details__topic {
   padding: var(--padding-default);
   padding-bottom: 0;
-  width: 320px;
+  /* width: 320px; */
   margin: 0 auto;
 
   & ul {
@@ -367,7 +367,7 @@ input[type=submit] {
   }
 
   & li {
-    width: 50%;
+    width: 100%;
     color: var(--color-primary);
     background: var(--color-white);
   }
