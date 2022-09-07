@@ -822,6 +822,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       value = yearObj[years].present;
       const rectText = value; //83
       value = value * 1.3; //107
+      const uncertMinValue = value * 0.7; //59
       const uncerHeight = Math.ceil(100 - (rectText * 100 / value));
       valuePct = value * unitPct;
       rect = document.createElement('div');
@@ -831,15 +832,18 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       const span = document.createElement('span');
       rect.classList.add('graph-item');
       rect.style.height = valuePct+'%';
-      present.innerHTML = rectText;
       present.classList.add('present-item');
-      present.style.height = (85 - uncerHeight) + '%';
+      present.style.height = (95 - uncerHeight) + '%';
       unc.classList.add('uncert-item');
       unc.style.height = uncerHeight + '%';
-      overlap.style.height = '15%';
+      overlap.style.height = '5%';
       overlap.classList.add('overlap-item');
       span.classList.add('overlap-item-span');
-      unc.innerHTML = '<div style="width: 53%; height: 100%; margin-top: 0px; border-right: #17527c 1px solid;">&nbsp;</div>';
+      const uncerValue = Math.ceil(value);
+      const uncertMin = Math.floor(uncertMinValue);
+      span.innerText = uncertMin; 
+      unc.innerHTML = `<div style="color: black; margin-top: -16px">${uncerValue}</div><div style="width: 53%; height: 100%; margin-top: 0px; border-right: #17527c 1px solid; color: black">
+      </div>`;
       overlap.innerHTML = '<div style="width: 3%; height: 100%; margin: 0 auto; border-right: #17527c 1px solid;">&nbsp;</div>';
       overlap.appendChild(span);
       rect.appendChild(unc);
