@@ -48,8 +48,8 @@
   height: 64px;
   margin: 8px;
   border-radius: 50%;
-  border: 6px solid DodgerBlue;
-  border-color: #fff  DodgerBlue;
+  border: 6px solid var(--color-primary);
+  border-color: #fff  var(--color-primary);
   animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {
