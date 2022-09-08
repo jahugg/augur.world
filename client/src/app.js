@@ -821,8 +821,8 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
     if (uncert) {
       value = yearObj[years].present;
       const rectText = value; //83
-      value = value * 1.3; //107
-      const uncertMinValue = value * 0.7; //59
+      value = value * 1.15; //107
+      const uncertMinValue = value * 0.85; //59
       const uncerHeight = Math.ceil(100 - (rectText * 100 / value));
       valuePct = value * unitPct;
       rect = document.createElement('div');
@@ -833,10 +833,10 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
       rect.classList.add('graph-item');
       rect.style.height = valuePct+'%';
       present.classList.add('present-item');
-      present.style.height = (95 - uncerHeight) + '%';
+      present.style.height = (98 - uncerHeight) + '%';
       unc.classList.add('uncert-item');
       unc.style.height = uncerHeight + '%';
-      overlap.style.height = '5%';
+      overlap.style.height = '2%';
       overlap.classList.add('overlap-item');
       span.classList.add('overlap-item-span');
       const uncerValue = Math.ceil(value);
