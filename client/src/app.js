@@ -1,9 +1,21 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+
 import pinImage from 'url:./assets/icons/location_pin.svg';
 import pinShadowImage from 'url:./assets/icons/location_pin_shadow.svg';
 
 let map;
+let augurLayer;
+let currentFocus;
+let locationData;
+let latlong;
+let tilesPeriod = 50;
+let defaultYear = 2030;
+let uncertainty = false;
+
+// setup
+const provider = new OpenStreetMapProvider();
 const locationIcon = new L.icon({
   iconUrl: pinImage,
   shadowUrl: pinShadowImage,
@@ -16,6 +28,10 @@ const locationIcon = new L.icon({
 });
 const marker = new L.marker([0, 0], { icon: locationIcon });
 const defaultPage = 'home';
+// const languages = ['en', 'es', 'de'];
+
+let currentLang = 'en';
+
 const pages = {
   home: {
     title: 'Home',
@@ -34,10 +50,58 @@ const pages = {
   },
 };
 
+const languages = {
+  en: {
+    source: import('./i18n/en.json')
+  },
+  es: {
+    source: import('./i18n/es.json')
+  },
+  de: {
+    source: import('./i18n/de.json')
+  }
+};
+
+let selectedLangFile = null;
+let fallBackLangFile = null;
+
 /**
  * initialize the application
  */
-function init() {
+
+async function translatePage() {
+  const language = (new URLSearchParams(location.search)).get('lang');
+
+  if(Object.keys(languages).indexOf(language) !== -1) {
+    const lang = await languages[language].source;
+    fallBackLangFile = await languages["en"].source;
+    selectedLangFile = lang;
+
+    const keys = Object.keys(lang);
+
+    keys.forEach(key => {
+      const el = document.querySelector(`[data-translate='${key}']`);
+      if(el?.nodeName === "INPUT") {
+        el.setAttribute("placeholder", (lang[key] || fallBackLangFile[key]));
+      }
+      
+      else if (el) {
+        el.innerHTML = lang[key] || fallBackLangFile[key];
+      }
+    })
+
+  }
+}
+
+function translate(key) {
+  if (selectedLangFile) {
+    return selectedLangFile[key];
+  }
+  
+  return fallBackLangFile[key];
+}
+
+async function init() {
   document.addEventListener('DOMContentLoaded', function () {
     navigateToCurrentURL();
   });
@@ -53,7 +117,14 @@ function init() {
     detectRetina: true,
   });
 
-  let augurLayer = L.tileLayer('https://obellprat.github.io/tilesaugur/tiles100/{z}/{x}/{-y}.png', {
+  if (Boolean(location.search) && location.search.includes('period')) {
+    const period = (new URLSearchParams(location.search)).get('period');
+    if (['10', '20', '30', '100'].includes(period)) tilesPeriod = period;
+    document.querySelector("select[name=tiles_period]").value = tilesPeriod;
+  }
+
+  
+  augurLayer = L.tileLayer(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`, {
     detectRetina: true,
     opacity: 0.5,
   });
@@ -72,10 +143,20 @@ function init() {
     layers: [baseLayer, augurLayer],
   });
 
+  if (Boolean(location.search) && location.search.includes('lat') && location.search.includes('lng')) {
+    const lat = (new URLSearchParams(location.search)).get('lat');
+    const lng = (new URLSearchParams(location.search)).get('lng');
+    if (location.search.includes('year')) {
+      const year = (new URLSearchParams(location.search)).get('year');
+      if (['2030', '2040', '2050'].includes(year))  defaultYear = year;
+    }
+    setLocation([lat, lng], defaultYear);
+  }
+
   // add event listeners
   // selecting location (use long press for touch devices)
-  if (is_touch_enabled()) map.addEventListener('contextmenu', (event) => setLocation(event.latlng));
-  else map.addEventListener('click', (event) => setLocation(event.latlng));
+  if (is_touch_enabled()) map.addEventListener('contextmenu', (event) => setLocation([event.latlng?.lat, event?.latlng?.lng]));
+  else map.addEventListener('click', (event) => setLocation([event.latlng?.lat, event?.latlng?.lng]));
 
   let menuBtn = document.getElementById('map__contents__navigate__menu-toggle');
   menuBtn.addEventListener('click', toggleAside);
@@ -92,8 +173,87 @@ function init() {
   const detailsHandler = document.querySelector('#map__contents__details__drag-handle');
   detailsHandler.addEventListener('click', handleDetailsPosition);
 
-  // for testing
-  // setLocation({ lat: -12.101622, lng: -76.985037 });
+  const periodHandler = document.getElementById('map__contents__period');
+  periodHandler.addEventListener('change', handlePeriodValue);
+
+  const shareHandler = document.querySelector('button[name=share]');
+  shareHandler.addEventListener('click', handleShareClick);
+
+  const downloadHandler = document.querySelector("button[name=download]");
+  downloadHandler.addEventListener("click", download);
+
+  const getLocationHandler = document.querySelector("button#getLocation");
+  getLocationHandler.addEventListener("click", getCurrentLocation);
+
+  const climateChangeHandler = document.querySelector('select[name=climate_change_period]');
+  climateChangeHandler.value = defaultYear;
+  climateChangeHandler.addEventListener('change', handleClimateChange);
+
+  const uncertaintyChangeHandler = document.querySelector('input[name=uncertainty_check]');
+  uncertaintyChangeHandler.addEventListener('change', handleUncertainty);
+
+  const findHandler = document.getElementById('map__contents__navigate__search__input');
+  findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
+  findHandler.addEventListener('keydown', handleKeyDownFind);
+
+  fallBackLangFile = await languages["en"].source;
+
+  await translatePage();
+}
+
+function getCurrentLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(getToPosition);
+  }
+}
+
+function goToPage(pageUrl) {
+  document.location.href = `/${pageUrl}`;
+}
+
+async function getToPosition(position) {
+  map.flyTo([position.coords.latitude, position.coords.longitude], 5);
+  marker.setLatLng([position.coords.latitude, position.coords.longitude]).addTo(map)
+  await setLocation([position.coords.latitude, position.coords.longitude]);
+}
+
+function handleShareClick (){
+  //get current url
+  const url = new URL(location.href);
+  //create new params pair
+  const new_params = new URLSearchParams({"lat": latlong[0], "lng": latlong[1], "period": tilesPeriod, "year": defaultYear});
+  const new_url = new URL(`${url.origin}${url.pathname}?${new_params}`);
+  var textArea = document.createElement("textarea");
+
+  textArea.style.position = 'fixed';
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+
+  textArea.value = new_url;
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    document.execCommand('copy');
+    document.querySelector("label[class=tooltiptext]").style.visibility= "visible";
+    setTimeout( function() {
+        document.querySelector("label[class=tooltiptext]").style.visibility = "hidden";
+    }, 1000);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+
+  document.body.removeChild(textArea);
+}
+
+function handleClimateChange(event) {
+  defaultYear = event.target.value;
+
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear, uncertainty);
+  const graphContainer = document.getElementById('map__contents__details__graph');
+  graphContainer.replaceChildren(precipitationGraph);
 }
 
 function navigateToCurrentURL() {
@@ -102,6 +262,147 @@ function navigateToCurrentURL() {
   for (let key in pages) if (pages[key].slug === urlSlug) pageKey = key;
   let stateObj = { pageKey: pageKey };
   buildPage(stateObj, false);
+}
+function closeAllLists(elmnt) {
+  const inp = document.getElementById('map__contents__navigate__search__input');
+  let x = document.getElementsByClassName("autocomplete-items");
+  for (let i = 0; i < x.length; i++) {
+    if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+
+function handleKeyDownFind(e) {
+  let x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        currentFocus++;
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        currentFocus--;
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        e.preventDefault();
+        if (currentFocus > -1) {
+          if (x) x[currentFocus].click();
+        }
+      }
+}
+
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
+function generateFileContent() {
+
+  const years = Object.keys(locationData?.period);
+  const periods = Object.keys(locationData?.period[years[0]]?.years);
+
+  const values = periods.map((period) => {
+
+    let res = [`${period}-Year in today: ${locationData?.period[years[0]]?.years[period].present}`]
+    res = res.concat(years.map((year, index) => {
+      let str = "";
+      
+      str += `${period}-Year in ${year}: ${locationData?.period[year]?.years[period].climate_change}`;
+      return str;
+    }));
+
+    return res;
+  }).reduce((acc, arr) => {
+    return acc.concat(...arr);
+  }, []).join("\n");
+  
+  return `# Data downloaded by augur.world
+# Selected coordinates:
+lat = ${latlong[0]}, lon = ${latlong[1]}
+# Precipitation data
+${values}
+`;
+};
+
+function download() {
+  var element = document.createElement('a');
+
+  console.log(latlong);
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(generateFileContent()));
+  element.setAttribute('download', latlong[0] + " - " + latlong[1] + ".txt");
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+function addActive(x) {
+  if (!x) return false;
+  removeActive(x);
+  if (currentFocus >= x.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = (x.length - 1);
+  x[currentFocus].classList.add("autocomplete-active");
+}
+
+function removeActive(x) {
+  for (var i = 0; i < x.length; i++) {
+    x[i].classList.remove("autocomplete-active");
+  }
+}
+
+// pm2 start "npm run start-server" --name client
+// pm2 start --name server server.js
+// rm -rf dist && npm run build
+
+async function handleFind(event) {
+  const arr = await provider.search({ query: event.target.value });
+  const inp = this;
+
+  let a, b, i, val = this.value;
+  if (!val) { return false;}
+
+  closeAllLists();
+  currentFocus = -1;
+  
+  a = document.createElement("div");
+  a.setAttribute("id", this.id + "autocomplete-list");
+  a.setAttribute("class", "autocomplete-items");
+
+  this.parentNode.appendChild(a);
+  const arrayLength = arr.length > 4 ? 4 : arr.length;
+  for (i = 0; i < arrayLength; i++) {
+    b = document.createElement("DIV");
+    b.innerHTML = "<strong>" + arr[i].label.substr(0, val.length) + "</strong>";
+    b.innerHTML += arr[i].label.substr(val.length);
+    b.innerHTML += "<input type='hidden' value='" + arr[i].label + "' name='label' />";
+    b.innerHTML += `<input type='hidden' value='${arr[i].y}' name='lat' />`;
+    b.innerHTML += `<input type='hidden' value='${arr[i].x}' name='lng' />`;
+
+    b.addEventListener("click", async function(e) {
+        inp.value = this.querySelector("input[name=label]")?.value;
+
+        const latLng = [this.querySelector("input[name=lat]")?.value, this.querySelector("input[name=lng]")?.value];
+        closeAllLists();
+
+        await setLocation(latLng);
+
+    });
+    a.appendChild(b);
+  }
+}
+
+/**
+ * handle/select period value
+ * @param  {Object} event Event that triggered the function
+ */
+function handlePeriodValue(event) {
+  tilesPeriod = event.target.value;
+  augurLayer.setUrl(`https://obellprat.github.io/tilesaugur/tiles${tilesPeriod}/{z}/{x}/{-y}.png`);
 }
 
 /**
@@ -125,17 +426,65 @@ async function buildPage(stateObj, addToHistory) {
   // mark current link as selected
   const navigation = document.querySelector('#aside nav');
   for (let child of navigation.children) delete child.dataset.selected;
-  navigation.querySelector(`a[href="${page.slug}"]`).dataset.selected = '';
+  navigation.querySelector(`a[to="${page.slug}"]`).dataset.selected = '';
 
   // update URL and history
-  if (addToHistory) history.pushState(stateObj, '', page.slug);
+
+  const language = (new URLSearchParams(location.search)).get('lang');
+
+  if (addToHistory) history.pushState(stateObj, '', page.slug + (language ? "?lang=" + language : ""));
 
   // load module contents
   const target = document.getElementById('aside__content');
   const module = await page.module;
   const content = await module.default(); // render
   target.replaceChildren(content);
-  module.init?.(); // only run if function exists
+  module.init?.(changeLanguage); // only run if function exists
+
+
+  const lang = new URLSearchParams(location.search).get('lang');
+
+  if (lang && lang !== 'null') {
+    document.querySelectorAll(".languages-inputes-container input").forEach(el => {
+      if(el.value === lang) {
+        el.setAttribute("checked", "checked");
+      } else {
+        el.removeAttribute("checked");
+      }
+    });
+
+  }
+  await translatePage();
+}
+
+function changeLanguage() {
+  document.querySelector(".languages-inputes-container").addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    let inputEl = null;
+
+    if (event.target.nodeName === 'LABEL') {
+      inputEl = event.target.querySelector("input");
+    } else if (event.target.nodeName === "INPUT") {
+      inputEl = event.target;
+    }
+
+    if (inputEl) {
+
+      document.querySelectorAll(".languages-inputes-container input").forEach(el => {
+        el.removeAttribute("checked");
+      });
+
+      inputEl.setAttribute("checked", "checked");
+      const url = new URL(location);
+
+      url.searchParams.set("lang", inputEl?.value);
+
+
+      document.location.href = url; 
+    }
+  })
 }
 
 /**
@@ -145,10 +494,12 @@ async function buildPage(stateObj, addToHistory) {
 function onClickPageLink(event) {
   event.preventDefault();
   const link = event.target.closest('a');
-  const slug = link.getAttribute('href');
+  const slug = link.getAttribute('to');
 
   // find corresponding page object
   let pageKey;
+
+  
   for (const key in pages) if (pages[key].slug === slug) pageKey = key;
 
   // define stateobj and buildpage
@@ -156,16 +507,25 @@ function onClickPageLink(event) {
   buildPage(stateObj, true);
 }
 
+function handleUncertainty(event) {
+  uncertainty = event.currentTarget.checked;
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, defaultYear, uncertainty);
+  const graphContainer = document.getElementById('map__contents__details__graph');
+  graphContainer.replaceChildren(precipitationGraph);
+}
+
 /**
  * setting a new location on the map
- * @param  {Object} latlnt Coorinates of the new location as {lat:x, lng:y}
+ * @param  {Object} latlng Coorinates of the new location as [lat, lng]
  * @todo update everything related to the new location
  */
-async function setLocation(latlng) {
+async function setLocation(latlng, year = 2030) {
   marker.setLatLng(latlng).addTo(map);
-
+  latlong = latlng;
+  document.querySelector("div[class=lds-dual-ring]").style.display = "inline-block";
+  document.getElementById("map__contents__details__graph").style.display = "none";
   // pan to location on map...
-
+  map.flyTo(latlng, 5);
   // update url
 
   // update search field input
@@ -173,10 +533,9 @@ async function setLocation(latlng) {
   delete mapEl.dataset.detailsClosed;
 
   // load and open details view
-  let latlngOfLima = { lat: -12.101622, lng: -76.985037 }; // for demonstration!
-  const locationData = await fetchLocationData(latlngOfLima);
+  locationData = await fetchLocationData(latlng);
   // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
-  const precipitationGraph = drawPrecipitactionGraphDOM(locationData);
+  const precipitationGraph = drawPrecipitactionGraphDOM(locationData, year, uncertainty);
   const graphContainer = document.getElementById('map__contents__details__graph');
   graphContainer.replaceChildren(precipitationGraph);
 }
@@ -185,8 +544,10 @@ function clearLocation(event) {
   const mapEl = document.getElementById('map');
   mapEl.dataset.detailsClosed = '';
   mapEl.dataset.detailsAsSheet = '';
-
+  closeAllLists();
   //clear search field input
+  const searchInput = document.getElementById('map__contents__navigate__search__input');
+  searchInput.value = null;
   // close details view
 }
 
@@ -217,7 +578,7 @@ function toggleAside(targetState) {
  * @todo replace static json data with live server request.
  */
 async function fetchLocationData(latlng) {
-  const response = await fetch(`${process.env.SERVER}/api/location?lat=${latlng.lat}&lng=${latlng.lng}`);
+  const response = await fetch(`${process.env.SERVER}/location?lat=${latlng[0]}&lng=${latlng[1]}`);
   return await response.json();
 }
 
@@ -362,18 +723,22 @@ function drawPrecipitationGraphSVG(data) {
  * @return {DOM Element}      DOM Element containing the graph
  * @todo Replace this with SVG in the future
  */
-function drawPrecipitactionGraphDOM(data) {
-  const defaultPeriod = 2030;
-  const rowLabelStepSize = 10;
+function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) {
+  let rowLabelStepSize = 10;
 
+  document.querySelector("div[class=lds-dual-ring]").style.display = "none";
+  document.getElementById("map__contents__details__graph").style.display = "inline-block";
   // get max value and column count
   const values = [];
   for (let key in data.period[defaultPeriod].years) {
-    values.push(data.period[defaultPeriod].years[key].present);
+    const present = data.period[defaultPeriod].years[key].present;
+    values.push(present);
     values.push(data.period[defaultPeriod].years[key].climate_change);
+    if (uncert) values.push(present * 1.3);
   }
 
   const maxValue = Math.max(...values);
+  if (maxValue > 299) rowLabelStepSize = 20;
   const ceiledMaxValue = Math.ceil(maxValue / rowLabelStepSize) * rowLabelStepSize;
   const rowCount = ceiledMaxValue / rowLabelStepSize;
   const yearObj = data.period[defaultPeriod].years;
@@ -394,7 +759,7 @@ function drawPrecipitactionGraphDOM(data) {
 
   let legend = document.createElement('ul');
   legend.classList.add('legend');
-  legend.innerHTML = `<li>Climate Change</li>
+  legend.innerHTML = `<li>${translate('climate_change')}</li>
     <li>Present</li>`;
   header.appendChild(legend);
 
@@ -447,18 +812,55 @@ function drawPrecipitactionGraphDOM(data) {
     let valuePct = value * unitPct;
     let rect = document.createElement('div');
     rect.classList.add('graph-item');
+    rect.classList.add('climate-item');
     rect.style.height = valuePct+'%';
     rect.innerHTML = value;
     graphSectionOne.appendChild(rect);
 
     // draw graph items (layer one)
-    value = yearObj[years].present;
-    valuePct = value * unitPct;
-    rect = document.createElement('div');
-    rect.classList.add('graph-item');
-    rect.style.height = valuePct+'%';
-    rect.innerHTML = value;
-    graphSectionTwo.appendChild(rect);
+    if (uncert) {
+      value = yearObj[years].present;
+      const rectText = value; //83
+      value = value * 1.15; //107
+      const uncertMinValue = value * 0.85; //59
+      const uncerHeight = Math.ceil(100 - (rectText * 100 / value));
+      valuePct = value * unitPct;
+      rect = document.createElement('div');
+      const present = document.createElement('div');
+      const unc = document.createElement('div');
+      const overlap = document.createElement('div');
+      const span = document.createElement('span');
+      rect.classList.add('graph-item');
+      rect.style.height = valuePct+'%';
+      present.classList.add('present-item');
+      present.style.height = (98 - uncerHeight) + '%';
+      unc.classList.add('uncert-item');
+      unc.style.height = uncerHeight + '%';
+      overlap.style.height = '2%';
+      overlap.classList.add('overlap-item');
+      span.classList.add('overlap-item-span');
+      const uncerValue = Math.ceil(value);
+      const uncertMin = Math.floor(uncertMinValue);
+      span.innerText = uncertMin; 
+      unc.innerHTML = `<div style="color: black; margin-top: -16px">${uncerValue}</div><div style="width: 53%; height: 100%; margin-top: 0px; border-right: #17527c 1px solid; color: black">
+      </div>`;
+      overlap.innerHTML = '<div style="width: 3%; height: 100%; margin: 0 auto; border-right: #17527c 1px solid;">&nbsp;</div>';
+      overlap.appendChild(span);
+      rect.appendChild(unc);
+      rect.appendChild(overlap);
+      rect.appendChild(present);
+      graphSectionTwo.appendChild(rect);
+    } else {
+      value = yearObj[years].present;
+      valuePct = value * unitPct;
+      rect = document.createElement('div');
+      rect.classList.add('graph-item');
+      rect.classList.add('present-item');
+      rect.style.height = valuePct+'%';
+      rect.innerHTML = value;
+      graphSectionTwo.appendChild(rect);
+  
+    }
   }
 
   return graph;

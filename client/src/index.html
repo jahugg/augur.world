@@ -11,10 +11,10 @@
     <div id="app" data-aside-closed>
       <aside id="aside">
         <header id="aside__header">
-          <nav>
-            <a href="/" data-selected><img class="icon" src="./assets/icons/home_filled_black_24dp.svg" alt="Close" /></a>
-            <a href="/language">Language</a>
-            <a href="/about">About</a>
+          <nav class="nav-items">
+            <a to="/" href="#" data-selected><img class="icon" src="./assets/icons/home_filled_black_24dp.svg" alt="Close" /></a>
+            <a to="/language" href="#" data-translate="languages">Language</a>
+            <a to="/about" href="#">About</a>
           </nav>
         </header>
         <div id="aside__content"></div>
@@ -25,62 +25,66 @@
           <div id="map__contents__period">
             <label class="card"
               >Return Period
-              <select>
+              <select name="tiles_period">
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
-                <option value="50" selected>50</option>
+                <option value="50" >50</option>
                 <option value="100">100</option>
               </select>
             </label>
           </div>
           <div id="map__contents__tools">
-            <button type="button" class="card"><img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" /></button>
+            <button type="button" class="card" id="getLocation">
+              <img class="icon" src="./assets/icons/gps_fixed_black_24dp.svg" alt="My Location" />
+            </button>
           </div>
           <div id="map__contents__details">
             <section>
               <div id="map__contents__details__topic">
                 <ul>
                   <li data-selected><a href="#">Precipitation</a></li>
-                  <li><a href="#">Flooding</a></li>
                 </ul>
               </div>
               <div id="map__contents__details__description">Expected daily maximum precipitation.</div>
               <div id="map__contents__details__graph">Graph</div>
+              <div class="lds-dual-ring"></div>
               <div id="map__contents__details__drag-handle"></div>
               <ul id="map__contents__details__settings">
-                <li>
+                <!-- <li>
                   <label
                     >Consider Climate Change
                     <input type="checkbox" name="vehicle1" value="uncertainty" checked />
                   </label>
-                </li>
+                </li> -->
                 <li>
                   <label
                     >Climate Change Period
-                    <select>
+                    <select name="climate_change_period">
                       <option value="2030">2030</option>
                       <option value="2040">2040</option>
-                      <option value="2050" selected>2050</option>
+                      <option value="2050">2050</option>
                     </select>
                   </label>
                 </li>
                 <li>
                   <label
                     >Show Uncertainty Range
-                    <input type="checkbox" name="vehicle1" value="uncertainty" />
+                    <input type="checkbox" name="uncertainty_check" />
                   </label>
                 </li>
               </ul>
               <ul id="map__contents__details__actions">
                 <li>
-                  <button type="button"><img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" /></button>
+                  <button type="button" name="download">
+                    <img class="icon" src="./assets/icons/file_download_black_24dp.svg" alt="Download" />
+                  </button>
                 </li>
                 <li>
-                  <button type="button"><img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" /></button>
-                </li>
-                <li>
-                  <button type="button"><img class="icon" src="./assets/icons/print_black_24dp.svg" alt="Print" /></button>
+                  <button type="button" name="share" class="tooltip">
+                    <img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" />
+                    <label class="tooltiptext">Copied!</label>
+                  </button>
                 </li>
               </ul>
             </section>
@@ -89,8 +93,8 @@
             <button id="map__contents__navigate__menu-toggle" class="card" type="button">
               <img class="icon" src="./assets/icons/menu_black_24dp.svg" alt="Menu" />
             </button>
-            <div id="map__contents__navigate__search" class="card">
-              <input id="map__contents__navigate__search__input" type="search" placeholder="Find a place..." />
+            <div id="map__contents__navigate__search" class="card autocomplete">
+              <input id="map__contents__navigate__search__input" type="input" placeholder="Find a place..."  data-translate="find_place"/>
               <label for="map__contents__navigate__search__input">
                 <img class="icon" src="./assets/icons/search_black_24dp.svg" alt="Search" />
               </label>

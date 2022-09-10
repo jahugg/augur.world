@@ -22,6 +22,96 @@
   padding: var(--space-rel-s);
   box-shadow: var(--card-shadow);
 }
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  margin: auto;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--color-primary);
+  border-color: #fff  var(--color-primary);
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=input] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
 
 /**
  * app
@@ -263,7 +353,7 @@
 #map__contents__details__topic {
   padding: var(--padding-default);
   padding-bottom: 0;
-  width: 320px;
+  /* width: 320px; */
   margin: 0 auto;
 
   & ul {
@@ -277,7 +367,7 @@
   }
 
   & li {
-    width: 50%;
+    width: 100%;
     color: var(--color-primary);
     background: var(--color-white);
   }
@@ -551,7 +641,7 @@
       color: white;
       width: var(--rect-width);
       text-align: center;
-      background: var(--color-primary-light);
+      /* background: var(--color-primary-light); */
       pointer-events: auto;
       cursor: pointer;
       position: relative;
@@ -579,10 +669,35 @@
       }
     }
 
+    &.graph-section .climate-item {
+      background: var(--color-primary-light);
+    }
+
     &.graph-section-layer .graph-item {
-      background: var(--color-primary);
-      box-shadow: var(--card-shadow);
       transform: translateX(calc(var(--rect-width) * 0.2));
+    }
+
+    &.graph-section-layer .present-item {
+      background: var(--color-primary);
+    }
+
+    &.graph-section-layer .graph-item .uncert-item {
+      box-shadow: none !important;
+      border-top: 1px solid #17527c;
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+
+    &.graph-section-layer .graph-item .overlap-item {
+      box-shadow: var(--card-shadow);
+      background-color: var(--color-primary);
+    }
+
+    &.graph-section-layer .graph-item .overlap-item-span {
+      border-top: 1px solid #17527c;
+      width: 21px;
+      display: inline-block;
+      margin-bottom: 14px;
     }
   }
 }
