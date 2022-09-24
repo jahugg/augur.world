@@ -1,7 +1,8 @@
 {
-    "languages": "Languages German",
-    "home": "Home text de",
-    "find_place": "find place german",
-    "climate_change": "climate change de",
-    "about": "About de"
+    "languages": "Sprachen",
+    "home": "Diese Website zeigt an, wie viel Starkregen Sie heute und unter den Bedingungen des Klimawandels überall auf der Welt erwarten können. <br> <br>  AUGUR.world ist ein Prototyp, der humanitären Akteuren den Zugang zu Klimaexpertenwissen erleichtert.",
+    "find_place": "Ort suchen ...",
+    "climate_change": "Klimawandel",
+    "present": "Gegenwart",
+    "about": "Hintergrund"
 }

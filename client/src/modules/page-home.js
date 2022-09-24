@@ -6,8 +6,9 @@ export default function render() {
     <article>  
       <h1>AUGUR.world</h1>
       <p data-translate="home">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, nobis fuga! Odit repellat debitis quaerat unde inventore nemo explicabo
-        dolor blanditiis quasi architecto in ad non, sunt culpa reiciendis corrupti.
+        This site displays how much heavy rain you can expect today and under climate change anywhere on the globe. <br><br>
+
+	AUGUR.world is a prototype increasing the access to climate expert knowledge required by humanitarian actors.
       </p>
     </article>
     <footer>

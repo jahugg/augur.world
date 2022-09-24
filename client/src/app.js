@@ -112,9 +112,10 @@ async function init() {
   });
 
   // configure tile layer
-  let baseLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png', {
-    attribution: `attribution: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>`,
-    detectRetina: true,
+  let baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 20
   });
 
   if (Boolean(location.search) && location.search.includes('period')) {
@@ -134,6 +135,7 @@ async function init() {
     center: new L.LatLng(0, 0),
     zoom: 4,
     minZoom: 4,
+    maxZoom: 8,
     zoomControl: false,
     // maxBounds: L.latLngBounds(L.latLng(50, -74.227), L.latLng(40.774, -74.125)),
     maxBounds: [
@@ -148,7 +150,7 @@ async function init() {
     const lng = (new URLSearchParams(location.search)).get('lng');
     if (location.search.includes('year')) {
       const year = (new URLSearchParams(location.search)).get('year');
-      if (['2030', '2040', '2050'].includes(year))  defaultYear = year;
+      if (['2030', '2050', '2090'].includes(year))  defaultYear = year;
     }
     setLocation([lat, lng], defaultYear);
   }
@@ -189,8 +191,8 @@ async function init() {
   climateChangeHandler.value = defaultYear;
   climateChangeHandler.addEventListener('change', handleClimateChange);
 
-  const uncertaintyChangeHandler = document.querySelector('input[name=uncertainty_check]');
-  uncertaintyChangeHandler.addEventListener('change', handleUncertainty);
+  // const uncertaintyChangeHandler = document.querySelector('input[name=uncertainty_check]');
+  // uncertaintyChangeHandler.addEventListener('change', handleUncertainty);
 
   const findHandler = document.getElementById('map__contents__navigate__search__input');
   findHandler.addEventListener('input', debounce(handleFind.bind(findHandler), 300));
@@ -760,7 +762,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
   let legend = document.createElement('ul');
   legend.classList.add('legend');
   legend.innerHTML = `<li>${translate('climate_change')}</li>
-    <li>Present</li>`;
+    <li>${translate('present')}</li>`;
   header.appendChild(legend);
 
   // draw row labels and row lines
@@ -821,8 +823,8 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
     if (uncert) {
       value = yearObj[years].present;
       const rectText = value; //83
-      value = value * 1.15; //107
-      const uncertMinValue = value * 0.85; //59
+      const uncertMinValue = value * 0.7; //59
+      value = value * 1.3; //107
       const uncerHeight = Math.ceil(100 - (rectText * 100 / value));
       valuePct = value * unitPct;
       rect = document.createElement('div');

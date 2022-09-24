@@ -24,9 +24,12 @@
 }
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
+  width: 60px;
+  color: black;
+  font-weight: bold;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font: var(--font-regular);
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;

@@ -17,7 +17,9 @@
             <a to="/about" href="#">About</a>
           </nav>
         </header>
-        <div id="aside__content"></div>
+        <div id="aside__content">
+		<img src="AUGUR-process-Ilustration.png" alt="Test">
+	</div>
       </aside>
       <main id="map" data-details-closed data-details-as-sheet>
         <div id="map__contents">
@@ -62,17 +64,17 @@
                     >Climate Change Period
                     <select name="climate_change_period">
                       <option value="2030">2030</option>
-                      <option value="2040">2040</option>
                       <option value="2050">2050</option>
+                      <option value="2090">2090</option>
                     </select>
                   </label>
                 </li>
-                <li>
+	        <!-- <li>
                   <label
                     >Show Uncertainty Range
                     <input type="checkbox" name="uncertainty_check" />
                   </label>
-                </li>
+                </li> --> 
               </ul>
               <ul id="map__contents__details__actions">
                 <li>
@@ -83,7 +85,7 @@
                 <li>
                   <button type="button" name="share" class="tooltip">
                     <img class="icon" src="./assets/icons/share_black_24dp.svg" alt="Share" />
-                    <label class="tooltiptext">Copied!</label>
+                    <label class="tooltiptext">Copied</label>
                   </button>
                 </li>
               </ul>

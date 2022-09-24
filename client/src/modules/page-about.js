@@ -3,29 +3,9 @@ export default function render() {
   module.classList.add('module');
   module.id = 'about';
   module.innerHTML = `<div data-translate="about">
-    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, 
-    aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit 
-    amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate 
-    reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur
-     adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus
-      voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat
-       quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia 
-       optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam 
-       neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae.
-       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam 
-       cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet 
-       consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis 
-       nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-       Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! 
-       Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam 
-       neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. 
-       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, 
-       aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet 
-       consectetur adipisicing elit. Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis nam 
-       voluptatibus voluptates voluptatum! Mollitia optio amet natus nobis beatae. Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-       Aliquid placeat quasi adipisci ut quibusdam neque eius exercitationem, aperiam cupiditate reiciendis nam voluptatibus voluptates voluptatum! 
-       Mollitia optio amet natus nobis beatae. 
+  AUGUR is an initiative of the Swiss Agency for Development (SDC) humanitarian accelerator “Innovation meets Practice” in 2021. <br><br>
+  Its vision is to provide state-of-the-art information on climate variability and change which is <b>open-source</b>, <b>quality proven</b> and <b>easy to understand</b>.  <br><br>
+  A first product is the development of a digital toolkit to assess the risk from heavy precipitation. Additional products will offer the calculation of riverine discharge and level of flooding for remote areas where no local and global trust worthful data is available.
   </div>`;
-
   return module;
 }
