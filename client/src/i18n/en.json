@@ -1,5 +1,8 @@
 {
     "title": "Title English",
-    "home": "This site displays how much heavy rain you can expect today and under climate change anywhere on the globe. AUGUR.world is a prototype increasing the access to climate expert knowledge required by humanitarian actors.",
-    "climate_change": "Climate Change"
+    "home": "This site displays how much heavy rain you can expect today and under climate change anywhere on the globe. <br><br> AUGUR.world is a prototype increasing the access to climate expert knowledge required by humanitarian actors.",
+    "climate_change": "Climate Change",
+    "present": "Present",
+    "precipitation": "Precipitation",
+    "precipitation2": "Precipitation [mm/day]"
 }

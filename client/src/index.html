@@ -14,7 +14,7 @@
           <nav class="nav-items">
             <a to="/" href="#" data-selected><img class="icon" src="./assets/icons/home_filled_black_24dp.svg" alt="Close" /></a>
             <a to="/language" href="#" data-translate="languages">Language</a>
-            <a to="/about" href="#">About</a>
+            <a to="/about" href="#" data-translate="aboutbutton">>About</a>
           </nav>
         </header>
         <div id="aside__content">
@@ -26,7 +26,7 @@
           <div id="map__contents__tiles"></div>
           <div id="map__contents__period">
             <label class="card"
-              >Return Period
+              ><a data-translate="return">Return Period</a>
               <select name="tiles_period">
                 <option value="10">10</option>
                 <option value="20">20</option>
@@ -45,10 +45,10 @@
             <section>
               <div id="map__contents__details__topic">
                 <ul>
-                  <li data-selected><a href="#">Precipitation</a></li>
+			<li data-selected><a href="#" data-translate="precipitation">Precipitation</a></li>
                 </ul>
               </div>
-              <div id="map__contents__details__description">Expected daily maximum precipitation.</div>
+	      <div id="map__contents__details__description"> <a data-translate="expected">Expected daily maximum precipitation.</a></div>
               <div id="map__contents__details__graph">Graph</div>
               <div class="lds-dual-ring"></div>
               <div id="map__contents__details__drag-handle"></div>
@@ -61,7 +61,7 @@
                 </li> -->
                 <li>
                   <label
-                    >Climate Change Period
+		    ><a data-translate="period">Climate Change Period</a>
                     <select name="climate_change_period">
                       <option value="2030">2030</option>
                       <option value="2050">2050</option>

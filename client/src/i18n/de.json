@@ -4,5 +4,10 @@
     "find_place": "Ort suchen ...",
     "climate_change": "Klimawandel",
     "present": "Gegenwart",
-    "about": "Hintergrund"
-}
+    "about": "AUGUR ist eine Initiative des humanitären Innovationsprogramms \"Innovation meets Practice\" der Schweizer Direktion für Entwicklung und Zusammenarbeit (DEZA) im Jahr 2021. <br><br> Ihre Vision ist es, moderne Informationen zu Klimakatastrophen und Klimawandel bereitzustellen, die open source, qualitätsgeprüft und für humanitäre Akteure praktikabel sind. Diese Dienste reduzieren die finanziellen und administrativen Kosten für den Zugang zu Klimaexpertenwissen. <br><br> AUGUR kombiniert Informationen aus Satellitenbildern mit Modellen zum Klimawandel. Ein erstes Produkt ist die Entwicklung eines digitalen Toolkits zur Bewertung des Risikos von Starkniederschlägen. Weitere Produkte werden die Berechnung des Abflusses und des Überschwemmungsgrads in abgelegenen Gebieten ermöglichen, für die keine vertrauenswürdigen lokalen und globalen Daten verfügbar sind.",
+    "precipitation": "Niederschlag",
+    "precipitation2": "Niederschlag [mm/Tag]",
+    "expected": "Erwarteter maximaler Tagesniederschlag.",
+    "period": "Klimawandelperiode",
+    "return": "Wiederkehrperiode",
+    "aboutbutton": "Hintergrund"
