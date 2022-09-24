@@ -5,9 +5,12 @@
     "climate_change": "Klimawandel",
     "present": "Gegenwart",
     "about": "AUGUR ist eine Initiative des humanitären Innovationsprogramms \"Innovation meets Practice\" der Schweizer Direktion für Entwicklung und Zusammenarbeit (DEZA) im Jahr 2021. <br><br> Ihre Vision ist es, moderne Informationen zu Klimakatastrophen und Klimawandel bereitzustellen, die open source, qualitätsgeprüft und für humanitäre Akteure praktikabel sind. Diese Dienste reduzieren die finanziellen und administrativen Kosten für den Zugang zu Klimaexpertenwissen. <br><br> AUGUR kombiniert Informationen aus Satellitenbildern mit Modellen zum Klimawandel. Ein erstes Produkt ist die Entwicklung eines digitalen Toolkits zur Bewertung des Risikos von Starkniederschlägen. Weitere Produkte werden die Berechnung des Abflusses und des Überschwemmungsgrads in abgelegenen Gebieten ermöglichen, für die keine vertrauenswürdigen lokalen und globalen Daten verfügbar sind.",
+    "science": "AUGUR schätzt extreme Niederschlagsereignisse mit einer Auflösung von 5 Kilometern aus dem Satellitenprodukt <a href=\"https\://www.nature.com/articles/sdata201566/\">CHIRPS</a>. Die Ereignisse werden aus den jährlichen maximalen eintägigen Niederschlagssummen [mm/d] abgeleitet, die durch eine statistische Verteilung für extreme Ereignisse angepasst werden. <br><br> Die geschätzten Ereignisse werden anhand von Niederschlagsbeobachtungen der <a href=\"https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily/\">GHCN</a>-Bodenstationen korrigiert. Diese Korrektur berücksichtigt die Unterschätzung des Satellitenniederschlags, insbesondere über tropischen Regionen. <br><br> Die Signale für den Klimawandel wurden aus dem Sechsten Bericht des Weltklimarates (IPCC) (AR6) berechnet. Die Daten zeigen nur das SS5-8.5-Szenario.",
     "precipitation": "Niederschlag",
     "precipitation2": "Niederschlag [mm/Tag]",
     "expected": "Erwarteter maximaler Tagesniederschlag.",
     "period": "Klimawandelperiode",
     "return": "Wiederkehrperiode",
-    "aboutbutton": "Hintergrund"
+    "aboutbutton": "Hintergrund",
+    "sciencebutton": "Wissenschaft"
+}

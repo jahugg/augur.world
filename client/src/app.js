@@ -48,6 +48,11 @@ const pages = {
     slug: '/about',
     module: import('./modules/page-about.js'),
   },
+  science: {
+    title: 'Science',
+    slug: '/science',
+    module: import('./modules/page-science.js'),
+  },
 };
 
 const languages = {

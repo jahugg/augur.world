@@ -1,3 +1,16 @@
 {
-    "title": "Title Spanish"
+    "languages": "Idiomas",
+    "home": "Este sitio web muestra la cantidad de precipitaciones intensas que se pueden esperar hoy en día y bajo las condiciones del cambio climático en todo el mundo.<br><br> AUGUR.world es un prototipo que ayuda a los actores humanitarios a acceder conocimientos sobre el clima.",
+    "climate_change": "Cambio climático",
+    "present": "Presente",
+    "about": "AUGUR es una iniciativa del acelerador de innovación humanitaria \"Innovation meets Practice\" de la Agencia Suiza para el Desarrollo (COSUDE) en 2021.<br><br> Su visión es proporcionar información de vanguardia sobre los desastres y el cambio climático que sea de código abierto, de calidad probada y factible para los actores humanitarios. Estos servicios reducen los costes financieros y administrativos para acceder a los conocimientos de los especialistas en clima.<br><br>AUGUR combina la información procedente de las imágenes por satélite y la modelización del cambio climático. Un primer producto es el desarrollo de un conjunto de herramientas digitales para evaluar el riesgo de fuertes precipitaciones. Otros productos ofrecerán el cálculo de la descarga fluvial y el nivel de las inundaciones en zonas remotas donde no se dispone de datos locales y globales de confianza.",
+    "science": "AUGUR estima los eventos de precipitación extrema a una resolución de 5 kilómetros a partir del producto satelital <a href=\"https://www.nature.com/articles/sdata201566/\">CHIRPS</a>. Los eventos se derivan de las sumas de precipitación máxima anual de un día [mm/d] ajustadas por la distribución estadística para eventos extremos.<br><br>  Los eventos estimados se corrigen utilizando las observaciones de precipitación en tierra del <a href=\"https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily/\">GHCN</a>. Esta corrección permite tener en cuenta la subestimación de la precipitación por satélite, especialmente en las regiones tropicales.<br><br> Las señales de cambio climático se calculan a partir del Sexto Informe de Evaluación (AR6) del Grupo Intergubernamental de Expertos sobre el Cambio Climático (IPCC). Los datos muestran únicamente el escenario SS5-8.5.",
+    "precipitation": "Precipitación",
+    "precipitation2": "Precipitación [mm/día]",
+    "expected": "Precipitación máxima diaria prevista.",
+    "period": "Periodo de cambio climático",
+    "return": "Período de retorno",
+    "aboutbutton": "Contexto",
+    "sciencebutton": "Ciencia",
+    "find_place": "Buscar lugar ..."
 }

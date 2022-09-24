@@ -3,7 +3,7 @@ export default function render() {
   module.classList.add('module');
   module.id = 'about';
   module.innerHTML = `<div data-translate="about">
-  AUGUR is an initiative of Swiss Agency for Development (SDC) humanitarian innovation accelerator “Innovation meets Practice” in 2021. <br><br>
+  AUGUR is an initiative of the Swiss Agency for Development (SDC) humanitarian innovation accelerator “Innovation meets Practice” in 2021. <br><br>
 
 Its vision is to provide state-of-the-art information on climate disasters and change which is open source,  quality proven and feasible for humanitarian actors. These services reduce the financial and administrative costs to access climate expert knowledge. <br><br>
 
