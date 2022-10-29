@@ -11,6 +11,15 @@
 @custom-media --map-without-details (width > 500px);
 @custom-media --map-with-details (width > 900px);
 
+@media (hover:none), (hover:on-demand) { 
+  body {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -ms-user-select: none !important; 
+  }
+}
+
+
 /**
  * general
  */

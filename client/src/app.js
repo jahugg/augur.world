@@ -214,10 +214,6 @@ function getCurrentLocation() {
   }
 }
 
-function goToPage(pageUrl) {
-  document.location.href = `/${pageUrl}`;
-}
-
 async function getToPosition(position) {
   map.flyTo([position.coords.latitude, position.coords.longitude], 5);
   marker.setLatLng([position.coords.latitude, position.coords.longitude]).addTo(map)
@@ -336,7 +332,6 @@ ${values}
 function download() {
   var element = document.createElement('a');
 
-  console.log(latlong);
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(generateFileContent()));
   element.setAttribute('download', latlong[0] + " - " + latlong[1] + ".txt");
 
@@ -361,10 +356,6 @@ function removeActive(x) {
     x[i].classList.remove("autocomplete-active");
   }
 }
-
-// pm2 start "npm run start-server" --name client
-// pm2 start --name server server.js
-// rm -rf dist && npm run build
 
 async function handleFind(event) {
   const arr = await provider.search({ query: event.target.value });
@@ -544,6 +535,8 @@ async function setLocation(latlng, year = 2030) {
   // const precipitationGraph = drawPrecipitationGraphSVG(locationData);
   const precipitationGraph = drawPrecipitactionGraphDOM(locationData, year, uncertainty);
   const graphContainer = document.getElementById('map__contents__details__graph');
+
+  document.querySelector('select[name=climate_change_period]').selectedIndex = 0;
   graphContainer.replaceChildren(precipitationGraph);
 }
 
