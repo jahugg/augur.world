@@ -12,5 +12,7 @@
     "period": "Klimawandelperiode",
     "return": "Wiederkehrperiode",
     "aboutbutton": "Hintergrund",
-    "sciencebutton": "Wissenschaft"
+    "sciencebutton": "Wissenschaft",
+    "uncertainty": "Unsicherheitsbereich anzeigen",
+    "unit": "[mm/Tag]"
 }

@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VK3TGYKWZF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VK3TGYKWZF');
+    </script>
+    <title>AUGUR.world</title>
+    <meta property="og:title" content="AUGUR"/>
+    <meta property="og:image" content="https://www.augur.world/images/AUGUR-science-Ilustration.png"/>
+    <meta property="og:description"
+          content="AUGUR is an initiative of the Swiss Agency for Development (SDC) humanitarian innovation accelerator “Innovation meets Practice” in 2021."/>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AUGUR.world</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel='stylesheet' />
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.17/leaflet-maplibre-gl.js"></script>
     <link rel="stylesheet" href="./styles/main.css" />
     <script type="module" src="./app.js"></script>
+
   </head>
   <body>
     <div id="app" data-aside-closed>
@@ -30,9 +48,7 @@
               ><a data-translate="return">Return Period</a>
               <select name="tiles_period">
                 <option value="10">10</option>
-                <option value="20">20</option>
                 <option value="30">30</option>
-                <option value="50" >50</option>
                 <option value="100">100</option>
               </select>
             </label>
@@ -54,12 +70,12 @@
               <div class="lds-dual-ring"></div>
               <div id="map__contents__details__drag-handle"></div>
               <ul id="map__contents__details__settings">
-                <!-- <li>
+               <!--  <li>
                   <label
                     >Consider Climate Change
                     <input type="checkbox" name="vehicle1" value="uncertainty" checked />
                   </label>
-                </li> -->
+                </li>  --> 
                 <li>
                   <label
 		    ><a data-translate="period">Climate Change Period</a>
@@ -70,12 +86,12 @@
                     </select>
                   </label>
                 </li>
-	        <!-- <li>
+	        <li>
                   <label
-                    >Show Uncertainty Range
+                    ><a data-translate="uncertainty">Show Uncertainty Range</a>
                     <input type="checkbox" name="uncertainty_check" />
                   </label>
-                </li> --> 
+                </li>
               </ul>
               <ul id="map__contents__details__actions">
                 <li>

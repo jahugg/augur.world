@@ -17,7 +17,7 @@ export default function render() {
     <div id="legend__colors"></div>
       <div id="legend__scale">
         <span id="legend__scale__min">0</span>
-        <span id="legend__scale__max">1000</span>
+        <span id="legend__scale__max">\>1000</span>
       </div>
     </div>
     </footer>`;

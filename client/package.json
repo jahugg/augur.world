@@ -13,6 +13,7 @@
     "start-server": "http-server dist/ -p 1234 -g"
   },
   "dependencies": {
+    "maplibre-gl-leaflet": "^0.0.19",
     "http-server": "^14.1.1",
     "leaflet": "^1.8.0",
     "leaflet-geosearch": "^3.6.1"

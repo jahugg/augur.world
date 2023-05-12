@@ -10,7 +10,7 @@ let augurLayer;
 let currentFocus;
 let locationData;
 let latlong;
-let tilesPeriod = 10;
+let tilesPeriod = 50;
 let defaultYear = 2030;
 let uncertainty = false;
 
@@ -146,6 +146,7 @@ subdomains: 'abcd',
     opacity: 1,
   });
  
+  
   // create map
   map = new L.map('map__contents__tiles', {
     center: new L.LatLng(0, 0),
@@ -158,9 +159,14 @@ subdomains: 'abcd',
       [-50, -Infinity],
       [50, Infinity],
     ],
-    layers: [augurLayer,baseLayer],
   });
-  
+
+  const key = '8G3pyOFXp9S4ChsdvLyC';
+  const baseLayer2 = L.maplibreGL({
+        attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+        style: `https://api.maptiler.com/maps/a18c611d-bd50-4621-aeeb-7517e6355399/style.json?key=${key}`
+      }).addTo(map);
+
   if (Boolean(location.search) && location.search.includes('lat') && location.search.includes('lng')) {
     const lat = (new URLSearchParams(location.search)).get('lat');
     const lng = (new URLSearchParams(location.search)).get('lng');
@@ -735,7 +741,7 @@ function drawPrecipitationGraphSVG(data) {
  * @todo Replace this with SVG in the future
  */
 function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) {
-  let rowLabelStepSize = 20;
+  let rowLabelStepSize = 10;
 
   document.querySelector("div[class=lds-dual-ring]").style.display = "none";
   document.getElementById("map__contents__details__graph").style.display = "inline-block";
@@ -749,8 +755,7 @@ function drawPrecipitactionGraphDOM(data, defaultPeriod = 2030, uncert = false) 
   }
 
   const maxValue = Math.max(...values);
-  if (maxValue > 299) rowLabelStepSize = 50;
-  if (maxValue > 599) rowLabelStepSize = 100;
+  if (maxValue > 299) rowLabelStepSize = 20;
   const ceiledMaxValue = Math.ceil(maxValue / rowLabelStepSize) * rowLabelStepSize;
   const rowCount = ceiledMaxValue / rowLabelStepSize;
   const yearObj = data.period[defaultPeriod].years;

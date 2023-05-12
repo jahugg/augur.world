@@ -4,5 +4,6 @@
     "climate_change": "Climate Change",
     "present": "Present",
     "precipitation": "Precipitation",
-    "precipitation2": "Precipitation [mm/day]"
+    "precipitation2": "Precipitation [mm/day]",
+    "unit": "[mm/day]"
 }

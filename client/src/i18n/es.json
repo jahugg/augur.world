@@ -12,5 +12,7 @@
     "return": "Período de retorno",
     "aboutbutton": "Contexto",
     "sciencebutton": "Ciencia",
-    "find_place": "Buscar lugar ..."
+    "find_place": "Buscar lugar ...",
+    "uncertainty": "Mostrar rango de incertidumbre",
+    "unit": "[mm/dia]"
 }

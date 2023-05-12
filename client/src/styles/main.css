@@ -23,6 +23,14 @@
 /**
  * general
  */
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 85%;
+}
+
 .card {
   background: white;
   border: none;
@@ -171,7 +179,7 @@ input[type=submit] {
     width: calc(100vw - var(--padding-mobile-overlap));
     max-width: var(--aside-max-width);
   }
-
+  
   @media (--window-narrow) {
     width: var(--aside-max-width);
 
@@ -746,7 +754,7 @@ input[type=submit] {
   & #legend__colors {
     margin-top: var(--space-s);
     height: var(--space-xl);
-    background: linear-gradient(90deg, rgba(253, 255, 215, 1) 0%, rgba(85, 176, 189, 1) 50%, rgba(29, 46, 95, 1) 100%);
+    background: linear-gradient(90deg, rgba(255,255,217, 1) 0%, rgba(199,233,180, 1) 25%, rgba(65,182,196, 1) 50%, rgba(34,94,168, 1) 75%, rgba(29, 46, 95, 1) 100%);
     border-left: solid 1px black;
     border-right: solid 1px black;
   }
@@ -790,12 +798,12 @@ input[type=submit] {
 }
 
 #map[data-details-as-sheet] {
-  @media not (--map-without-details) {
+  @media screen and (max-width: 500px) {
     & #map__contents__navigate {
       background: none;
     }
     & #map__contents__details {
-      --sheet-height: 445px;
+      --sheet-height: 400px;
 
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
@@ -804,10 +812,17 @@ input[type=submit] {
       top: calc(100% - var(--sheet-height));
     }
     & .graph-precip {
-      --graph-height: 240px;
+      --graph-height: 180px;
     }
     & #map__contents__details__description {
       display: none;
     }
   }
+}
+
+#app{
+  @media screen and (max-width: 500px){
+   overflow-y: hidden;
+   height: 90vh;
+   }
 }
