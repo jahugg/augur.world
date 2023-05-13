@@ -1,5 +1,5 @@
 # Augur.world
-World map for flood risk and precipitation event prediction
+World map for extreme precipitation under climate climate
 
 # Tooling Info
 - JavaScript runtime: [NodeJS](https://nodejs.org/)
@@ -8,45 +8,46 @@ World map for flood risk and precipitation event prediction
 - Web build tool: [ParcelJS](https://parceljs.org/)
 
 # Preperation
-- Install nodeJS https://nodejs.org/
+- Install nodeJS https://nodejs.org/ (>16)
 - Install yarn package manager via npm (bundled with nodeJS)
 ```shell
 npm install --global yarn
 ```
 
 # Installation
-- Clone Augur Repository 
+
+- Clone repository and go to client
 ```shell
-cd myDir
-git clone `https://github.com/jahugg/augur.world.git`
-```
-- cd into directory and install dependencies
-```shell
-cd myDir
-yarn install
+cd augur.world
+cd client
 ```
 
-# Set environment variables
-- create `.env` file in `myDir/client` directory with desired SERVER URL variable
+- Create .env file with content
+```shell
+cat -env "SERVER=http://localhost:3000/api"
+npm install
+npm run build
+npm run start-server
+```
 
-example:
-`SERVER=http://localhost:3000`
+- Note that http://localhost:3000/api is the endpoint for api, so if you start your server in a different port you need to set it accordingly, or in production, just set the actual url.
+- Go to main folder, then
+```shell
+cd server
+```
 
-- create `.env` file in `myDir/server` directory with corresponding PORT variable
-
-example:
-`PORT=3000`
+- Create .env file with content
+```shell
+PORT=3000
+DB_PATH=/Users/gaskar/Documents/augur.sqlite
+npm install
+npm start
+```
 
 # Run Application
-- Start Client
 ```shell
-cd myDir/client
-yarn start
-```
-- Start Server
-```shell
-cd myDir/server
-yarn nodemon server.js
+pm2 start "npm run start-server" --name client
+pm2 start --name server server.js
 ```
 
 # Open Application
